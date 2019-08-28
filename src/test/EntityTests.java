@@ -7,14 +7,18 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import exceptions.SnakePlacementException;
 import main.HumanPiece;
+import main.Ladder;
 import main.Snake;
+import main.Trap;
 
 public class EntityTests {
 
 	@Test
 	// Testing HumanPiece.activate()
 	public void test1() {
+		
 		// What does activate do?
 
 	}
@@ -41,28 +45,48 @@ public class EntityTests {
 	@Test
 	// Testing Snake.move()
 	public void test4() {
+		
+		Snake s = new Snake(20,10); 
+		s.move(21);
+		assertEquals(s.getTail(), 11);
 
 	}
-
-	// Testing Ladder.activate()
+	
+	@Test (expected = SnakePlacementException.class) 
+	//Testing snake.move() when tail would go below zero
 	public void test5() {
+		
+		Snake s = new Snake(5,1); 
+		s.move(3);
 
 	}
-
-	// Testing Ladder.move()
+	
+	
+	// Testing Ladder.activate()
 	public void test6() {
+		
+		Ladder l = new Ladder(10,20);
+		HumanPiece h3 = new HumanPiece(10);
+		l.activate(h3);
+		assertEquals(h3.getLocation(), l.getTop());
 
 	}
+
 
 	@Test
 	// Testing Trap.activate()
 	public void test7() {
+		
+	//What does activate do?
 
 	}
 
 	// Testing Trap.move()
-	public void test8() {
-
+	public void test9() {
+		
+		Trap t = new Trap(50, 3);
+		t.move(60);
+		assertEquals(t.getLocation(), 60);
 	}
 
 }

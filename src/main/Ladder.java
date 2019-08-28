@@ -14,8 +14,7 @@ public class Ladder extends Entity {
 		return true;
 	}
 
-	// Moves ladder from location to target, checks end does not move below location
-	// 0.
+	// Implements super.move()
 	public boolean move(int target) {
 		return true;
 	}
