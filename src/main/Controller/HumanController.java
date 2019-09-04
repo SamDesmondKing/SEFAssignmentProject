@@ -1,4 +1,7 @@
-package main;
+package main.Controller;
+
+import main.Model.Entity;
+import main.Model.Player;
 
 public class HumanController extends Player {
 

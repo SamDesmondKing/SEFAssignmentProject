@@ -8,10 +8,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import exceptions.SnakePlacementException;
-import main.HumanPiece;
-import main.Ladder;
-import main.Snake;
-import main.Trap;
+import main.Model.HumanPiece;
+import main.Model.Ladder;
+import main.Model.Snake;
+import main.Model.Trap;
 
 public class EntityTests {
 

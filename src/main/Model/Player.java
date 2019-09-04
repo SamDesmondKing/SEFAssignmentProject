@@ -1,4 +1,4 @@
-package main;
+package main.Model;
 
 public abstract class Player {
 	

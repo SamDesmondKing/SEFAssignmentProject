@@ -1,10 +1,13 @@
-package main;
+package main.Model;
 import java.awt.Color;
 import java.awt.Graphics;
+
+import main.Controller.GraphicsController;
 public class Dice
 {
    int n = -1;
-   Board sl;
+   GraphicsController sl;
+   
    public void draw(Graphics g)
    {
        g.setColor(Color.BLACK);
@@ -51,7 +54,7 @@ public class Dice
        }          
    }
 
-   public Dice(Board sl)
+   public Dice(GraphicsController sl)
    {
       this.sl = sl;
    }

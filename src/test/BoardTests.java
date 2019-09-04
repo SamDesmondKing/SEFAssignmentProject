@@ -6,10 +6,11 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.hamcrest.CoreMatchers.instanceOf;
 
-import main.Board;
-import main.Dice;
+import main.Model.Board;
+import main.Model.Dice;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
 
 
 public class BoardTests {
