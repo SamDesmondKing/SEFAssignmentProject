@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 import javax.swing.JOptionPane;
 
+import exceptions.LadderPlacementException;
+import exceptions.SnakePlacementException;
 import main.Model.Board;
 import main.Model.Dice;
 import main.Model.Ladder;
@@ -38,21 +40,30 @@ public class GameController {
 		
 		boardController = new BoardController(bd);
 		//int choice = 0;
-		boardController.add(new Trap(25,3));
-		boardController.add(new Trap(95,3));
-		trapsCount = 1;
 	
-		boardController.add(new Snake(92,34));
-		boardController.add(new Snake(62,12));	  
-		boardController.add(new Snake(41,3));  
-		boardController.add(new Snake(99,10));  
-	  
-		snakesCount = 3;
+		
+		try {
+			boardController.add(new Snake(92,34));
+			boardController.add(new Snake(62,12));
+			boardController.add(new Snake(41,3));  
+			boardController.add(new Snake(99,10)); 
+			snakesCount = 4;
+		} catch (SnakePlacementException e) {
+			e.printStackTrace();
+		}
+		
+		
 
-		boardController.add(new Ladder(7,49));
-		boardController.add(new Ladder(55,90));
-		boardController.add(new Ladder(38,86));
-		laddersCount = 3;
+		try {
+			boardController.add(new Ladder(7,49));
+			boardController.add(new Ladder(55,90));
+			boardController.add(new Ladder(38,86));
+			laddersCount = 3;
+		} catch (LadderPlacementException e) {
+			e.printStackTrace();
+		}
+		
+		
 			  
 	}	   
 	     

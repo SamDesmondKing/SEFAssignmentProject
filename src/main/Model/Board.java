@@ -6,8 +6,8 @@ public class Board {
 	
 	private int pieces[];
 	private Dice dice;
-	private Snake[] ss = new Snake[10];
-	private Ladder[]ls = new Ladder[10];
+	private Snake[] ss = new Snake[5];
+	private Ladder[]ls = new Ladder[5];
 	private Trap[] traps = new Trap[10];
 	int snakesCount = 0;
 	int laddersCount = 0;
