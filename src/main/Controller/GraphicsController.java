@@ -1,6 +1,8 @@
 package main.Controller;
 
+import java.util.ArrayList;
 import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
@@ -11,6 +13,7 @@ import javax.swing.JPanel;
 
 import main.Model.Board;
 import main.Model.Dice;
+import main.Model.HumanPiece;
 import main.Model.Ladder;
 import main.Model.Snake;
 import main.Model.Trap;
@@ -22,12 +25,12 @@ public class GraphicsController extends JPanel implements Runnable{
 	private double factor = 0.2;
 	private int XMARGIN = 20;
 	private int YMARGIN = 20;
-	private int pieces[];
+	private HumanPiece[] pieces = new HumanPiece[4];
 	private String bLines[] = new String[8];
 	private int bCount = 0;
 	private Dice dice;   
-    private Snake[] ss;
-    private Ladder[]ls;
+    private ArrayList<Snake> ss;
+    private ArrayList<Ladder> ls;
     private Trap[] traps;
     int snakesCount;
     int laddersCount;
@@ -92,34 +95,34 @@ public class GraphicsController extends JPanel implements Runnable{
       if (pieces.length > 0)
       {
          g.setColor(Color.WHITE);   
-         g.fillOval((int)getX(pieces[0])-10,getY(pieces[0])-10,20,20); 
+         g.fillOval((int)getX(pieces[0].getLocation())-10,getY(pieces[0].getLocation())-10,20,20); 
          g.setColor(Color.BLACK);   
-         g.drawString("1",(int)getX(pieces[0])-5,getY(pieces[0])+5); 
+         g.drawString("1",(int)getX(pieces[0].getLocation())-5,getY(pieces[0].getLocation())+5); 
       }
       if (pieces.length > 1)
       {
          g.setColor(Color.RED);   
-         g.fillOval((int)getX(pieces[1])+10,getY(pieces[1])-10,20,20); 
+         g.fillOval((int)getX(pieces[1].getLocation())+10,getY(pieces[1].getLocation())-10,20,20); 
          g.setColor(Color.BLACK);   
-         g.drawString("2",(int)getX(pieces[1])+15,getY(pieces[1])+5); 
+         g.drawString("2",(int)getX(pieces[1].getLocation())+15,getY(pieces[1].getLocation())+5); 
       }
       if (pieces.length > 2)
       {
          g.setColor(Color.GRAY);   
-         g.fillOval((int)getX(pieces[2])-10,getY(pieces[2])+10,20,20); 
+         g.fillOval((int)getX(pieces[2].getLocation())-10,getY(pieces[2].getLocation())+10,20,20); 
          g.setColor(Color.BLACK);   
-         g.drawString("3",(int)getX(pieces[2])-5,getY(pieces[2])+25); 
+         g.drawString("3",(int)getX(pieces[2].getLocation())-5,getY(pieces[2].getLocation())+25); 
       }
       if (pieces.length > 3)
       {
          g.setColor(Color.CYAN);   
-         g.fillOval((int)getX(pieces[3])+10,getY(pieces[3])+10,20,20); 
+         g.fillOval((int)getX(pieces[3].getLocation())+10,getY(pieces[3].getLocation())+10,20,20); 
          g.setColor(Color.BLACK);   
-         g.drawString("4",(int)getX(pieces[3])+15,getY(pieces[3])+25); 
+         g.drawString("4",(int)getX(pieces[3].getLocation())+15,getY(pieces[3].getLocation())+25); 
       }
    }
    
-   public void setPiece(int piece, int pos) {
+   public void setPiece(HumanPiece piece, int pos) {
 	   board.setPiece(piece, pos);
 	   repaint();
    }
@@ -242,9 +245,9 @@ public class GraphicsController extends JPanel implements Runnable{
 		this.snakesCount = board.getSnakesCount();
 		this.laddersCount = board.getLaddersCount();
 		this.trapsCount = board.getTrapsCount();
-		System.out.println(snakesCount);
-		System.out.println(laddersCount);
-		System.out.println(trapsCount);
+		//System.out.println(snakesCount);
+		//System.out.println(trapsCount);
+		//System.out.println(trapsCount);
 	   
 		super.paintComponent(g);
 		for (int i=0; i<10; i++) {
@@ -254,9 +257,7 @@ public class GraphicsController extends JPanel implements Runnable{
 				else 
 					g.setColor(Color.ORANGE);      
            
-				for (int k=0; k<trapsCount; k++)            
-					g.fillRect(XMARGIN + 40*i,YMARGIN+40*j, 40,40);
-
+				g.fillRect(XMARGIN + 40*i,YMARGIN+40*j, 40,40);
 			}
 
 		}
@@ -275,10 +276,10 @@ public class GraphicsController extends JPanel implements Runnable{
 		for ( int i=0; i<100; i++)    	  
 			g.drawString(""+(i+1), getX(i+1),getY(i+1)+20);
 		for (int i=0; i<snakesCount; i++) {
-         drawSnake(g,ss[i].getHead(), ss[i].getTail());
+         drawSnake(g,ss.get(i).getHead(), ss.get(i).getTail());
 		}
 		for (int i=0; i<laddersCount; i++)
-			drawLadder(g,ls[i].getBottom(), ls[i].getTop());
+			drawLadder(g,ls.get(i).getBottom(), ls.get(i).getTop());
 
 		g.setColor(Color.GRAY);
 		g.fill3DRect(430,40,200,340,true);
@@ -292,8 +293,8 @@ public class GraphicsController extends JPanel implements Runnable{
 
 		for (int i=0; i<bCount; i++)
 			g.drawString(bLines[i], 450, 70 + 30 * i);
-               
-		drawPieces(g);
+         if (GameController.getStage1())      
+			drawPieces(g);
 		dice.draw(g);
    }
 }

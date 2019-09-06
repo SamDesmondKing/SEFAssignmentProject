@@ -7,8 +7,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import exceptions.SnakePlacementException;
+import main.Controller.SnakeController;
 import main.Model.Board;
 import main.Model.Dice;
+import main.Model.Snake;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 
@@ -28,4 +31,11 @@ public class BoardTests {
 		Board board = new Board();
 		assertThat(board.getDice(),instanceOf(Dice.class));
 	}
+	/*
+	@Test (expected = SnakePlacementException.class)
+	public void test3() throws SnakePlacementException {
+		Snake snake = new Snake(91,73);
+		SnakeController.getTarget(snake,2);
+	}
+	*/
 }

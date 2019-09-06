@@ -1,34 +1,29 @@
 package main.Model;
+import java.util.ArrayList;
 
 
 
 public class Board {
 	
-	private int pieces[];
+	private HumanPiece[] pieces = new HumanPiece[4];
 	private Dice dice;
-	private Snake[] ss = new Snake[10];
-	private Ladder[]ls = new Ladder[10];
+	private ArrayList<Snake> ss = new ArrayList<Snake>();
+	private ArrayList<Ladder> ls = new ArrayList<Ladder>();
 	private Trap[] traps = new Trap[10];
 	int snakesCount = 0;
 	int laddersCount = 0;
 	int trapsCount = 0;
 
 	public Board() {
-	   this(2);
+	   this(4);
    }
 
 	public Board(int n) {
-      if ( n > 4 || n < 2)
-      {
-         System.out.println("Minimum 2 players and Maximum 4 players");
-         System.exit(0);
-      }
-
-      //  r.start();
-         
-	  pieces = new int[n];
-      for (int i=0; i<n; i++)
-          pieces[i] = 1;
+      
+		//  r.start();   
+		for (int i=0; i<n; i++) {
+			pieces[i] = new HumanPiece("Piece" + (i+1),1);
+		}
 	}
 
 	public Dice getDice() {
@@ -39,20 +34,20 @@ public class Board {
 		this.dice = dice;
 	}
 	
-	public Snake[] getSS() {
+	public ArrayList<Snake> getSS() {
 		return this.ss;
 	}
 	
 	public void setSS(int index, Snake snake) {
-		this.ss[index] = snake;
+		this.ss.add(index,snake);
 	}
    
-	public Ladder[] getLS() {
+	public ArrayList<Ladder> getLS() {
 		return this.ls;
 	}
 	
 	public void setLS(int index, Ladder ladder) {
-		this.ls[index] = ladder;
+		this.ls.add(index, ladder);
 	}
    
 	public Trap[] getTraps() {
@@ -87,11 +82,11 @@ public class Board {
 		this.trapsCount = trapsCount;
 	}
    
-	public int[] getPieces() {
+	public HumanPiece[] getPieces() {
 		return this.pieces;
 	}
    
-	public void setPiece(int piece, int pos) {
-		pieces[piece-1] = pos;
+	public void setPiece(HumanPiece piece, int pos) {
+		piece.setLocation(pos);
 	}
 }

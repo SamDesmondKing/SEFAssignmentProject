@@ -27,7 +27,7 @@ public class EntityTests {
 	// Testing HumanPiece.move()
 	public void test2() {
 
-		HumanPiece h = new HumanPiece(1);
+		HumanPiece h = new HumanPiece("1",1);
 		h.move(3);
 		assertEquals(h.getLocation(), 3);
 	}
@@ -37,7 +37,7 @@ public class EntityTests {
 	public void test3() {
 		
 		Snake s = new Snake(20,10);
-		HumanPiece h2 = new HumanPiece(20);
+		HumanPiece h2 = new HumanPiece("1",20);
 		s.activate(h2);
 		assertEquals(h2.getLocation(), s.getTail());
 	}
@@ -66,7 +66,7 @@ public class EntityTests {
 	public void test6() {
 		
 		Ladder l = new Ladder(10,20);
-		HumanPiece h3 = new HumanPiece(10);
+		HumanPiece h3 = new HumanPiece("1",10);
 		l.activate(h3);
 		assertEquals(h3.getLocation(), l.getTop());
 

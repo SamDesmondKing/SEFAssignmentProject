@@ -16,6 +16,8 @@ public class Snake extends Entity
    }
    
    //Moves snake from location to target, checks tail does not move below location 0.
+   //check for board boundaries, snake length, snake guards and collision with other
+   //snakes and ladders
    public boolean move(int target) {
 	   return true;
    }
