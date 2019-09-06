@@ -16,7 +16,7 @@ import main.Model.Dice;
 import main.Model.HumanPiece;
 import main.Model.Ladder;
 import main.Model.Snake;
-import main.Model.Trap;
+import main.Model.SnakeGuard;
 
 
 public class GraphicsController extends JPanel implements Runnable{
@@ -31,10 +31,10 @@ public class GraphicsController extends JPanel implements Runnable{
 	private Dice dice;   
     private ArrayList<Snake> ss;
     private ArrayList<Ladder> ls;
-    private Trap[] traps;
+    private ArrayList<SnakeGuard> snakeGuards;
     int snakesCount;
     int laddersCount;
-    int trapsCount;
+    int snakeGuardCount;
 	
 	private Board board;
 	
@@ -241,10 +241,10 @@ public class GraphicsController extends JPanel implements Runnable{
 		this.dice = board.getDice();
 		this.ss = board.getSS();
 		this.ls = board.getLS();
-		this.traps = board.getTraps();
+		this.snakeGuards = board.getSnakeGuards();
 		this.snakesCount = board.getSnakesCount();
 		this.laddersCount = board.getLaddersCount();
-		this.trapsCount = board.getTrapsCount();
+		this.snakeGuardCount = board.getSnakeGuardCount();
 		//System.out.println(snakesCount);
 		//System.out.println(trapsCount);
 		//System.out.println(trapsCount);
@@ -262,14 +262,9 @@ public class GraphicsController extends JPanel implements Runnable{
 
 		}
 		g.setColor(Color.BLACK);
-		for (int k =0; k<trapsCount; k++) {
-			int num = traps[k].getLocation(); 
-			if ( traps[k].getDuration() == 3 )
-				g.setColor(Color.BLUE);   
-			else if ( traps[k].getDuration() == 4 )
-				g.setColor(Color.GRAY); 
-			else
-				g.setColor(Color.BLACK); 	 	
+		for (int k =0; k<snakeGuardCount; k++) {
+			int num = snakeGuards.get(k).getLocation(); 
+			g.setColor(Color.BLUE); 	 	
 			g.fillRect(getX(num) -10 ,getY(num)-10,40,40);
 		} 
 		g.setColor(Color.BLACK); 

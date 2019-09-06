@@ -9,10 +9,10 @@ public class Board {
 	private Dice dice;
 	private ArrayList<Snake> ss = new ArrayList<Snake>();
 	private ArrayList<Ladder> ls = new ArrayList<Ladder>();
-	private Trap[] traps = new Trap[10];
+	private ArrayList<SnakeGuard> snakeGuards = new ArrayList<SnakeGuard>();
 	int snakesCount = 0;
 	int laddersCount = 0;
-	int trapsCount = 0;
+	int snakeGuardCount = 0;
 
 	public Board() {
 	   this(4);
@@ -50,12 +50,12 @@ public class Board {
 		this.ls.add(index, ladder);
 	}
    
-	public Trap[] getTraps() {
-		return this.traps;
+	public ArrayList<SnakeGuard> getSnakeGuards() {
+		return this.snakeGuards;
 	}
    
-	public void setTraps(int index, Trap trap) {
-		this.traps[index] = trap;
+	public void setSnakeGuards(int index, SnakeGuard snakeGuard) {
+		this.snakeGuards.add(index,snakeGuard);
 	}
 	
 	public int getSnakesCount() {
@@ -74,12 +74,12 @@ public class Board {
 		this.laddersCount = laddersCount;
 	}
    
-	public int getTrapsCount() {
-		return this.trapsCount;
+	public int getSnakeGuardCount() {
+		return this.snakeGuardCount;
 	}
 	
-	public void setTrapsCount(int trapsCount) {
-		this.trapsCount = trapsCount;
+	public void setSnakeGuardCount(int snakeGuardCount) {
+		this.snakeGuardCount = snakeGuardCount;
 	}
    
 	public HumanPiece[] getPieces() {

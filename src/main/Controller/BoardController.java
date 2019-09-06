@@ -1,16 +1,19 @@
 package main.Controller;
 
 import exceptions.LadderPlacementException;
+import exceptions.SnakeGuardPlacementException;
 import exceptions.SnakePlacementException;
 import main.Model.Board;
 import main.Model.Ladder;
 import main.Model.Snake;
+import main.Model.SnakeGuard;
 
 public class BoardController {
 
 	private Board board;
 	private int snakesCount;
 	private int laddersCount;
+	private int snakeGuardsCount;
 	private boolean topTwentySnake;
 
 //should be allowed to lay 5 snakes and 5 ladders. DONE 
@@ -116,6 +119,18 @@ public class BoardController {
 		// Adding ladder to Board
 		board.setLS(laddersCount, thisLadder);
 		board.setLaddersCount(++laddersCount);
-
+	}
+	
+	public void add(SnakeGuard thisSnakeGuard) throws SnakeGuardPlacementException{
+		this.snakeGuardsCount = this.board.getSnakeGuardCount();
+		
+		for (Snake s : this.board.getSS()) {
+			if (thisSnakeGuard.getLocation() == s.getHead()) {
+				throw new SnakeGuardPlacementException("Cannot place trap there!");
+			}
+		}
+		
+		board.setSnakeGuards(snakeGuardsCount, thisSnakeGuard);
+		board.setSnakeGuardCount(++snakeGuardsCount);
 	}
 }

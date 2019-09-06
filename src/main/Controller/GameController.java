@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 import javax.swing.JOptionPane;
 
+import exceptions.LadderPlacementException;
+import exceptions.SnakeGuardPlacementException;
 import exceptions.SnakePlacementException;
 import main.Model.Board;
 import main.Model.Dice;
@@ -12,7 +14,7 @@ import main.Model.HumanPiece;
 import main.Model.Ladder;
 import main.Model.Player;
 import main.Model.Snake;
-import main.Model.Trap;
+import main.Model.SnakeGuard;
 
 public class GameController {
 
@@ -21,12 +23,11 @@ public class GameController {
 	ArrayList<Snake> snakes = new ArrayList<Snake>();    	
 	ArrayList<Ladder> ladders = new ArrayList<Ladder>();  	
 	
-	//Trap traps[] = new Trap[10];       	// array can store up to 10 Trap objects
-	String name[] = new String[2];  		// array for storing the names
+	ArrayList<SnakeGuard> traps = new ArrayList<SnakeGuard>();
 	
 	int snakesCount = 0;				 
 	int laddersCount = 0;	
-	int trapsCount = 0;
+	int snakeGuardCount = 0;
 	private String admin;
 	private String humanPlayer;
 	private String snakePlayer;
@@ -40,6 +41,7 @@ public class GameController {
 	private int snakeNumber;
 	private int pieceNumber;
 	static boolean stage1 = false;
+	static boolean reached100 = false;
 	   
 	   
 	// Creating a Board, dice and a Scanner objects
@@ -131,7 +133,7 @@ public class GameController {
 			   try {
 				   boardController.add(new Snake(snakeHead,snakeTail));
 			   }
-			   catch(Exception e) {
+			   catch(SnakePlacementException e) {
 				   plainMessage(e.getMessage());
 				   continue;
 			   }
@@ -144,7 +146,7 @@ public class GameController {
 			   try {
 				   boardController.add(new Ladder(ladderBottom,ladderTop));
 			   }
-			   catch(Exception e) {
+			   catch(LadderPlacementException e) {
 				   plainMessage(e.getMessage());
 				   continue;
 			   }
@@ -184,17 +186,41 @@ public class GameController {
 		   this.pieces = bd.getPieces();
 		   this.snakes = bd.getSS();
 		   this.ladders = bd.getLS();
+		   this.snakesCount = bd.getSnakesCount();
+		   this.laddersCount = bd.getLaddersCount();
+		   this.snakeGuardCount = bd.getSnakeGuardCount();
 	   }
 	   
 	   public void humanPlayerTurn() {
-		   int val, location;
+		   int val, location, snakeGuard;
 		   
-		   if (checkAllPieceParalysed()) {
+		   if (checkAllPieceParalysed() && snakeGuardCount == maxSnakeGuard) {
 			   updateParalysedPieces();
+			   plainMessage("All pieces paralysed and no snake gaurds left. Humans' turn skipped.");
 			   return;
 		   }
 		   while (true) {
-			   pieceNumber = getInt(humanPlayer + ": Enter piece to move ",1,4);
+			   pieceNumber = getInt(humanPlayer + ": Enter piece number to move or "
+			   							+ "5 to place snake guard ",1,5);
+			   if (pieceNumber == 5 && snakeGuardCount == maxSnakeGuard) {
+				   plainMessage("Maximum number of snake guards already on the board");
+				   continue;
+			   }
+			   else if(pieceNumber == 5) {
+				   while (true) {
+					   snakeGuard = getInt(humanPlayer + ": Enter location for Snake "
+					   						+ "Guard",1,100);
+					   try {
+						   boardController.add(new SnakeGuard(snakeGuard));
+						   plainMessage("Snake Guard placed! No moves this turn.");
+						   return;
+					   } 
+					   catch (SnakeGuardPlacementException e) {
+						   plainMessage(e.getMessage());
+						   continue;
+					   }
+				   }
+			   }
 			   piece = pieces[pieceNumber - 1];
 			   if (!piece.getParalyse()) {
 				   break;
@@ -208,6 +234,21 @@ public class GameController {
 		      else
 		    	  dice.set(val);
 		   location += val;
+		   if (location > 100) {
+			   updateParalysedPieces();
+			   plainMessage("Cannot move there!");
+			   return;
+		   }
+		   if (location == 100) {
+			   if (piece.getLaddersClimbed().size() >= 3) {
+				   reached100 = true;
+				   updateParalysedPieces();
+				   return;
+			   }
+			   updateParalysedPieces();
+			   plainMessage("This piece can't land on 100 as it did not climb 3 distinct ladders");
+			   return;
+		   }
 		   graphicsController.setPiece(piece,location);
 		   loop:
 		   for (Snake snake: snakes) {
@@ -263,10 +304,11 @@ public class GameController {
 		   }
 	   }
 	   
-	   public void secondStage() {
-		   int humansTurn = 0;
+	   public boolean secondStage() {
 		   
-		   while (humansTurn != 50) {
+		   int humansTurn = 0;
+		   plainMessage("Board has been set! Second stage has commenced.");
+		   while (humansTurn != 50 && reached100 == false) {
 			   for (Player player: players) {
 				   updateGame();
 				   if (player.getType().equals("HUMANCONTROLLER")) {
@@ -280,8 +322,17 @@ public class GameController {
 			   }
 			   humansTurn++;
 		   }
+		   if (humansTurn == 50 && reached100 == false) {
+			   plainMessage("50 turns finished without reaching 100, Snakes win!");
+			   return false;
+		   }
+		   graphicsController.addMessage("100 reached! Final stage has commenced.");
+		   return true;
 	   }
 	   
+	   public void finalStage() {
+		   
+	   }
 	   
 	   // The main method implementing the game logic for Part A
 	   // For Part A you may use the hard coded values in the setup() method 
@@ -318,7 +369,10 @@ public class GameController {
 		      
 		initialStage();
 		
-		secondStage();
+		if (secondStage()) {
+			finalStage();
+		}
+		return;
 /*	      
 	      int p1Location = 1;
 	      int p2Location = 1;
@@ -354,7 +408,7 @@ public class GameController {
 	          plainMessage(snakePlayer + ": going up a ladder to " + p2Location);
 	          graphicsController.setPiece(2, p2Location);
 	      }
-*/
+
 	      
 	      plainMessage("The rest is up to you. You may have to introduce additional variables.");
 
@@ -368,6 +422,7 @@ public class GameController {
 	      graphicsController.addMessage("Remember to have fun!");   
 	      graphicsController.addMessage("Danger: Traps,Snakes");    
 	      graphicsController.addMessage("Trap: lose 3 moves");
+*/
 	   }
 	
 	public static boolean getStage1() {
