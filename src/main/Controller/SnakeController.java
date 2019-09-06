@@ -11,10 +11,10 @@ public class SnakeController {
 	private static final int[] left = {1,20,21,40,41,60,61,80,81,100};
 	private static final int[] right = {10,11,30,31,50,51,70,71,90,91};
 
-	//Tells the selected Snake to move to the selected location.
-	public boolean place(Entity piece) {
+	//Tells the selected Snake to move to the target location. Throws error if any issues
+	public boolean move(Snake snake, int target) throws SnakePlacementException {
 		return true;
-	}
+	}	
 	
 	//1 is up, 2 is down, 3 is left, 4 is right
 	//only checks for snake head out of bounds error, rest should be 

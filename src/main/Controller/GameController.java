@@ -236,14 +236,20 @@ public class GameController {
 	   }
 	   
 	   public void snakePlayerTurn() {
-		   int direction;
+		   int direction, target;
 		   snakeNumber = getInt(humanPlayer + ": Enter Snake number to move ",1,5);
 		   snake = snakes.get(snakeNumber - 1);
 		   while (true) {
 			   direction = getInt(snakePlayer + ": Enter number for direction - 1 for up, "
 							+ "2 for down, 3 for left, 4 for right ",1,4);
-			   
-			   if (snake.move(direction)) {
+			   try {
+				   target = SnakeController.getTarget(snake, direction);
+			   }
+			   catch (Exception e) {
+				   plainMessage(e.getMessage());
+				   continue;
+			   }
+			   if (snake.move(target)) {
 				   break;
 			   }
 		   }
