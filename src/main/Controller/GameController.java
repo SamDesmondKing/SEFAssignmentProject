@@ -242,6 +242,7 @@ public class GameController {
 		   while (true) {
 			   direction = getInt(snakePlayer + ": Enter number for direction - 1 for up, "
 							+ "2 for down, 3 for left, 4 for right ",1,4);
+			   
 			   if (snake.move(direction)) {
 				   break;
 			   }
