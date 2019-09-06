@@ -1,6 +1,7 @@
 package main.View;
 
 import main.Controller.GameController;
+import main.Model.Snake;
 
 public class GameInitiator {
 
@@ -10,8 +11,9 @@ public class GameInitiator {
    public static void main(String args[])
    {
        GameController game = new GameController();
-       
+
        game.control();
+	   
    }
 
 

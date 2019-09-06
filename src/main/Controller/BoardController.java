@@ -5,7 +5,6 @@ import exceptions.SnakePlacementException;
 import main.Model.Board;
 import main.Model.Ladder;
 import main.Model.Snake;
-import main.Model.Trap;
 
 public class BoardController {
 
@@ -35,16 +34,19 @@ public class BoardController {
 
 		// Check max 5 Snakes
 		if (this.snakesCount >= 5) {
+			System.out.println("z");
 			throw new SnakePlacementException("Snake limit reached");
 		}
 
 		// Check top/bottom difference
 		if (thisSnake.getHead() - thisSnake.getTail() > 30) {
+			System.out.println("x");
 			throw new SnakePlacementException("Snake length invalid");
 		} 
 
 		// No snake head on existing existing ladder head/base
 		for (Ladder i : this.board.getLS()) {
+			System.out.println("c");
 			if (thisSnake.getHead() == i.getTop() || thisSnake.getHead() == i.getBottom()) {
 				throw new SnakePlacementException("Snake position invalid (Ladder Clash)");
 			}
@@ -52,6 +54,7 @@ public class BoardController {
 
 		// No snake head on another snake head / either side of another snake head
 		for (Snake i : this.board.getSS()) {
+			System.out.println("v");
 			if (thisSnake.getHead() == i.getHead() || thisSnake.getHead() == (i.getHead() - 1)
 					|| thisSnake.getHead() == (i.getHead() + 1)) {
 				throw new SnakePlacementException("Snake position invalid (Snake Clash)");
@@ -59,11 +62,16 @@ public class BoardController {
 		}
 		
 		// Only one snake head allowed in positions 81 to 100
-		if (thisSnake.getHead() >= 81 || thisSnake.getHead() <= 100 && topTwentySnake == false) {
-			this.topTwentySnake = true;
-		} else {
-			throw new SnakePlacementException("Snake position invalid (Top Twenty Snake Clash)");
-		}
+		if (thisSnake.getHead() >= 81 && thisSnake.getHead() <= 100) {
+			System.out.println("b");
+			if (topTwentySnake == false) {
+				this.topTwentySnake = true;
+			}
+			else {
+				System.out.println("n");
+				throw new SnakePlacementException("Snake position invalid (Top Twenty Snake Clash)");
+			}
+		} 
 
 		// Adding snake to Board
 		board.setSS(snakesCount, thisSnake);
@@ -106,9 +114,8 @@ public class BoardController {
 		}
 
 		// Adding ladder to Board
-		if (laddersCount < 10) {
-			board.setLS(laddersCount, thisLadder);
-			board.setSnakesCount(++laddersCount);
-		}
+		board.setLS(laddersCount, thisLadder);
+		board.setLaddersCount(++laddersCount);
+
 	}
 }
