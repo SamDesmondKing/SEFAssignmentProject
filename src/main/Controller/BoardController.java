@@ -13,14 +13,17 @@ public class BoardController {
 	private int laddersCount;
 	private boolean topTwentySnake;
 
-//should be allowed to lay 5 snakes and 5 ladders. DONE 
-//Difference between snake head/tail or ladder top/base cannot be more than 30 DONE
-//Ladder top/base cannot be placed on a snake head DONE
-//Ladder base cannot be placed on another ladder's head DONE
-//No ladder base at location 1 and no ladder top at location 100 DONE
-//Snake head cannot be placed on top of an existing ladder head/base DONE
-//Snake head cannot be placed +-1 either side of another snake head DONE
-//Only one snake in locations 81 to 100 at any one time DONE
+// - Should be allowed to lay 5 snakes and 5 ladders. DONE 
+// - Difference between snake head/tail or ladder top/base cannot be more than 30 DONE
+// - Ladder top/base cannot be placed on a snake head DONE
+// - Ladder base cannot be placed on another ladder's head DONE
+// - No ladder base at location 1 and no ladder top at location 100 DONE
+// - Snake head cannot be placed on top of an existing ladder head/base DONE
+// - Snake head cannot be placed +-1 either side of another snake head DONE
+// - Only one snake in locations 81 to 100 at any one time DONE
+// - Snake head cannot be on or behind tail, and vice versa for ladder DONE
+// - Snakes and ladders cannot be horizontal DONE
+	
 
 	// Constructor
 	public BoardController(Board board) {
@@ -42,9 +45,14 @@ public class BoardController {
 		if (thisSnake.getHead() - thisSnake.getTail() > 30) {
 			System.out.println("x");
 			throw new SnakePlacementException("Snake length invalid");
-		} 
+		}
+		
+		//Check top/bottom not in same place and top is above bottom
+		if (thisSnake.getTail() >= thisSnake.getHead()) {
+			throw new SnakePlacementException("Snake position invalid (tail on or above head");
+		}
 
-		// No snake head on existing existing ladder head/base
+		// No snake head on existing ladder head/base
 		for (Ladder i : this.board.getLS()) {
 			System.out.println("c");
 			if (thisSnake.getHead() == i.getTop() || thisSnake.getHead() == i.getBottom()) {
@@ -72,6 +80,11 @@ public class BoardController {
 				throw new SnakePlacementException("Snake position invalid (Top Twenty Snake Clash)");
 			}
 		} 
+		
+		//Horizontal check
+		if (this.horizontalCheck(thisSnake.getHead(), thisSnake.getTail())) {
+			throw new SnakePlacementException("Snake position invalid (horizontal entity)");
+		}
 
 		// Adding snake to Board
 		board.setSS(snakesCount, thisSnake);
@@ -93,6 +106,11 @@ public class BoardController {
 		if (thisLadder.getTop() - thisLadder.getBottom() > 30) {
 			throw new LadderPlacementException("Ladder length invalid");
 		}
+		
+		//Check top/bottom not in same place and top is above bottom
+		if (thisLadder.getBottom() >= thisLadder.getTop()) {
+			throw new LadderPlacementException("Ladder position invalid (bottom on or above top");
+		}
 
 		// Check ladder doesn't begin or end on a snake head
 		for (Snake i : this.board.getSS()) {
@@ -112,10 +130,52 @@ public class BoardController {
 		if (thisLadder.getBottom() == 1 || thisLadder.getTop() == 100) {
 			throw new LadderPlacementException("Ladder position invalid (1 or 100)");
 		}
+		
+		//Horizontal check
+		if (this.horizontalCheck(thisLadder.getTop(), thisLadder.getBottom())) {
+			throw new LadderPlacementException("Ladder position invalid (horizontal entity)");
+		}
 
 		// Adding ladder to Board
 		board.setLS(laddersCount, thisLadder);
 		board.setLaddersCount(++laddersCount);
 
+	}
+	
+	//Check whether Entity is horizontal
+	public boolean horizontalCheck(int top, int bottom) {
+		
+		int board[][] = new int[10][10];
+		int square = 1;
+		int targetRow = 0;
+		boolean result = false;
+		
+		//2D Array representing the board
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				
+				board[i][j] = square;
+				square++;
+			}
+		}
+		
+		//Finding the index of the row which contains the Entity's top
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				
+				if (top == board[i][j]) {
+					targetRow = i;	
+				}
+			}
+		}
+		
+		//Checking whether the bottom is also in that row.
+		//If so, it's a horizontal entity and method returns true.
+		for (int i = 0; i < 10; i++) {
+			if (bottom == board[targetRow][i]) {
+				result = true;
+			} 
+		}
+		return result;
 	}
 }
