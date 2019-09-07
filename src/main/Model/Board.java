@@ -38,6 +38,10 @@ public class Board {
 		return this.ss;
 	}
 	
+	public ArrayList<SnakeGuard> getSG() {
+		return this.snakeGuards;
+	}
+	
 	public void setSS(int index, Snake snake) {
 		this.ss.add(index,snake);
 	}

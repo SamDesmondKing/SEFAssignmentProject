@@ -20,16 +20,16 @@ public class SnakeController {
 	
 	//Tells the selected Snake to move to the target location. Throws error if any issues
 	public void move(Snake thisSnake, int headTarget) throws SnakePlacementException {
-		
-		//Check for snake guard TODO
-		//Check for other snake head DONE
-		//Check for ladder base DONE 
-		//Check for tail < 1 DONE
 
 		int headMove = headTarget - thisSnake.getHead();
 		int tailTarget = thisSnake.getTail() + headMove;
 		
-		//Insert trap check here - when Quazi figures out merge conflicts. 
+		//Checking for SnakeGuards at headTarget
+		for (int i = 0; i < this.board.getSG().size(); i++) {
+			if (this.board.getSG().get(i).getLocation() == headTarget) {
+				throw new SnakePlacementException("Move invalid - snake guard there");
+			}
+		}
 		
 		//Checking for other snake heads at headTarget
 		for (int i = 0; i < this.board.getSS().size(); i++) {
