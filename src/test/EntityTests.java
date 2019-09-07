@@ -11,7 +11,7 @@ import exceptions.SnakePlacementException;
 import main.Model.HumanPiece;
 import main.Model.Ladder;
 import main.Model.Snake;
-import main.Model.Trap;
+import main.Model.SnakeGuard;
 
 public class EntityTests {
 
@@ -84,9 +84,9 @@ public class EntityTests {
 	// Testing Trap.move()
 	public void test9() {
 		
-		Trap t = new Trap(50, 3);
-		t.move(60);
-		assertEquals(t.getLocation(), 60);
+		SnakeGuard g = new SnakeGuard(50);
+		g.move(60);
+		assertEquals(g.getLocation(), 60);
 	}
 
 }
