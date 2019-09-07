@@ -2,6 +2,7 @@ package main.Controller;
 
 import java.util.Arrays;
 import exceptions.SnakePlacementException;
+import main.Model.Board;
 import main.Model.Entity;
 import main.Model.Player;
 import main.Model.Snake;
@@ -10,23 +11,48 @@ public class SnakeController {
 	
 	private static final int[] left = {1,20,21,40,41,60,61,80,81,100};
 	private static final int[] right = {10,11,30,31,50,51,70,71,90,91};
-
+	private Board board;
+	
+	//Constructor (so that we can see the state of the board to validate snake movement)
+	public SnakeController(Board board) {
+		this.board = board;
+	}
+	
 	//Tells the selected Snake to move to the target location. Throws error if any issues
-	public boolean move(Snake thisSnake, int target) throws SnakePlacementException {
+	public void move(Snake thisSnake, int headTarget) throws SnakePlacementException {
 		
-		//Check for snake guard
-		//Check for tail out of bounds
-		//Change head position
-		//Change tail position
+		//Check for snake guard TODO
+		//Check for other snake head DONE
+		//Check for ladder base DONE 
+		//Check for tail < 1 DONE
+
+		int headMove = headTarget - thisSnake.getHead();
+		int tailTarget = thisSnake.getTail() + headMove;
 		
-		if (thisSnake.getHead() - target == -1 || thisSnake.getHead() - target == 1) {
-			//You've moved left or right. Left or right doesn't relate to number size. 
-		} else {
-			//You've moved up or down. Up or down does relate to number size. 
+		//Insert trap check here - when Quazi figures out merge conflicts. 
+		
+		//Checking for other snake heads at headTarget
+		for (int i = 0; i < this.board.getSS().size(); i++) {
+			if (this.board.getSS().get(i).getHead() == headTarget) {
+				throw new SnakePlacementException("Move invalid - already a snake head there");
+			}
 		}
 		
+		//Checking for ladderBottoms at headTarget
+		for (int i = 0; i < this.board.getLS().size(); i++) {
+			if (this.board.getLS().get(i).getBottom() == headTarget) {
+				throw new SnakePlacementException("Move invalid - already a ladder base there");
+			}
+		}
 		
-		return true;
+		//Checking tail doesn't go off the board
+		if (tailTarget < 1) {
+			throw new SnakePlacementException("Move invalid - tail out of bounds");
+		}
+		
+		//Setting new head and tail values
+		thisSnake.setHead(headTarget);
+		thisSnake.setTail(tailTarget);
 	}	
 	
 	//1 is up, 2 is down, 3 is left, 4 is right
