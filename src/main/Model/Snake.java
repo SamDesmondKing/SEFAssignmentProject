@@ -29,4 +29,12 @@ public class Snake extends Entity
    public int getTail() { 
 	   return tail; 
    } 
+   
+   public void setHead(int head) {
+	   this.head = head;
+   }
+   
+   public void setTail(int tail) {
+	   this.tail = tail;
+   }
 }

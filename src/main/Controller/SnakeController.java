@@ -12,7 +12,20 @@ public class SnakeController {
 	private static final int[] right = {10,11,30,31,50,51,70,71,90,91};
 
 	//Tells the selected Snake to move to the target location. Throws error if any issues
-	public boolean move(Snake snake, int target) throws SnakePlacementException {
+	public boolean move(Snake thisSnake, int target) throws SnakePlacementException {
+		
+		//Check for snake guard
+		//Check for tail out of bounds
+		//Change head position
+		//Change tail position
+		
+		if (thisSnake.getHead() - target == -1 || thisSnake.getHead() - target == 1) {
+			//You've moved left or right. Left or right doesn't relate to number size. 
+		} else {
+			//You've moved up or down. Up or down does relate to number size. 
+		}
+		
+		
 		return true;
 	}	
 	
@@ -32,7 +45,7 @@ public class SnakeController {
 			throw new SnakePlacementException("Can't move left, already at the left side of board");
 		}
 		else if (direction == 4 && (Arrays.stream(right).anyMatch(x -> x == location))) {
-			throw new SnakePlacementException("Can't move left, already at the left side of board");
+			throw new SnakePlacementException("Can't move right, already at the right side of board");
 		}
 		if (direction == 1) {
 			while (index % 10 != 0) {
