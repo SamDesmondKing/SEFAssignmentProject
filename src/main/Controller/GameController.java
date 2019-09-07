@@ -31,9 +31,6 @@ public class GameController {
 	private String admin;
 	private String humanPlayer;
 	private String snakePlayer;
-	private Player adminController;
-	private Player humanController;
-	private Player snakeController;
 	private Player[] players = new Player[2];
 	private HumanPiece[] pieces = new HumanPiece[4];
 	private HumanPiece piece;
@@ -48,6 +45,7 @@ public class GameController {
 	Board bd = new Board();
 	BoardController boardController;
 	GraphicsController graphicsController = new GraphicsController(bd);
+	SnakeController snakeController;
 	Dice dice = bd.getDice();
 	Scanner scan = new Scanner(System.in);
 	
@@ -284,15 +282,21 @@ public class GameController {
 			   direction = getInt(snakePlayer + ": Enter number for direction - 1 for up, "
 							+ "2 for down, 3 for left, 4 for right ",1,4);
 			   try {
-				   target = SnakeController.getTarget(snake, direction);
+				   target = snakeController.getTarget(snake, direction);
 			   }
 			   catch (Exception e) {
 				   plainMessage(e.getMessage());
 				   continue;
 			   }
-			   if (snake.move(target)) {
-				   break;
+			   try {
+				   snakeController.move(snake,target);
+			   } 
+			   catch (SnakePlacementException e) {
+				   plainMessage(e.getMessage());
+				   continue;
 			   }
+			   break;
+			   
 		   }
 		   for (HumanPiece piece: pieces) {
 			   if (snake.getHead() == piece.getLocation()) {
@@ -314,11 +318,9 @@ public class GameController {
 				   if (player.getType().equals("HUMANCONTROLLER")) {
 					   humanPlayerTurn();
 				   }
-				   /*
 				   else {
 					   snakePlayerTurn();
 				   }
-				   */
 			   }
 			   humansTurn++;
 		   }
@@ -347,16 +349,14 @@ public class GameController {
 		//setup(bd);
 		   
 		boardController = new BoardController(bd);
+		snakeController = new SnakeController(bd);
 		graphicsController.clearMessages();  // clears the display board  
 		
 		admin = getString("Admin name : ");
 		humanPlayer = getString("Human player name : ");
-		snakePlayer = getString("Snake Player name : "); 
-		adminController = new Player(admin,"Admin");
-		humanController = new Player(humanPlayer,"Human");
-		players[0] = humanController;
-		snakeController = new Player(admin,"Snake");
-		players[1] = snakeController;
+		snakePlayer = getString("Snake Player name : ");
+		players[0] = new Player(humanPlayer,"Human");
+		players[1] = new Player(admin,"Snake");
 	      
 		graphicsController.clearMessages();
 		graphicsController.addMessage("Current Players are");

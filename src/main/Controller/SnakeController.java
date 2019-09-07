@@ -38,6 +38,13 @@ public class SnakeController {
 			}
 		}
 		
+		//Checking for ladderTops at headTarget
+				for (int i = 0; i < this.board.getLS().size(); i++) {
+					if (this.board.getLS().get(i).getTop() == headTarget) {
+						throw new SnakePlacementException("Move invalid - already a ladder top there");
+					}
+				}
+		
 		//Checking for ladderBottoms at headTarget
 		for (int i = 0; i < this.board.getLS().size(); i++) {
 			if (this.board.getLS().get(i).getBottom() == headTarget) {
@@ -58,7 +65,7 @@ public class SnakeController {
 	//1 is up, 2 is down, 3 is left, 4 is right
 	//only checks for snake head out of bounds error, rest should be 
 	//checked in snake move function
-	public static int getTarget(Snake snake,int direction) throws SnakePlacementException {
+	public int getTarget(Snake snake,int direction) throws SnakePlacementException {
 		int location = snake.getHead(), index = location, i = 0;
 		
 		if (direction == 1 && location > 90) {
