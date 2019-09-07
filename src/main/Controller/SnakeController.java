@@ -19,6 +19,13 @@ public class SnakeController {
 		//Change head position
 		//Change tail position
 		
+		if (thisSnake.getHead() - target == -1 || thisSnake.getHead() - target == 1) {
+			//You've moved left or right. Left or right doesn't relate to number size. 
+		} else {
+			//You've moved up or down. Up or down does relate to number size. 
+		}
+		
+		
 		return true;
 	}	
 	
