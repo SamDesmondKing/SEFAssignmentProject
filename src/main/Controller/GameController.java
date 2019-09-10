@@ -194,7 +194,7 @@ public class GameController {
 		   
 		   if (checkAllPieceParalysed() && snakeGuardCount == maxSnakeGuard) {
 			   updateParalysedPieces();
-			   plainMessage("All pieces paralysed and no snake gaurds left. Humans' turn skipped.");
+			   plainMessage("All pieces paralysed and no snake guards left. Humans' turn skipped.");
 			   return;
 		   }
 		   while (true) {
