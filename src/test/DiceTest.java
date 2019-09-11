@@ -15,7 +15,7 @@ public class DiceTest {
 	
 	@Test
 	//check if rolls are within bounds (1-6)
-	void testRoll() {
+	public void testRoll() {
 		int n;
 		n = d.roll();
 		
@@ -28,7 +28,7 @@ public class DiceTest {
 	}
 
 	@Test
-	void testSet() {
+	public void testSet() {
 		int n;
 		n = d.set(-1);
 		if (n != 1) {
@@ -48,7 +48,7 @@ public class DiceTest {
 	}
 
 	@Test
-	void testGetThrow() {
+	public void testGetThrow() {
 		for(int i = 1; i<=6; i++) {
 			if (Dice.getThrow() > 6 || Dice.getThrow() <1) {
 				fail("Not yet implemented");
