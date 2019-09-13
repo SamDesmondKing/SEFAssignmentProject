@@ -2,11 +2,11 @@ package main.Model;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import main.Controller.GraphicsController;
+import main.View.Game;
 public class Dice
 {
    int n = -1;
-   GraphicsController sl;
+   Game game;
    
    public void draw(Graphics g)
    {
@@ -54,9 +54,9 @@ public class Dice
        }          
    }
 
-   public Dice(GraphicsController sl)
+   public Dice(Game game)
    {
-      this.sl = sl;
+      this.game = game;
    }
 
    public int roll()
@@ -80,7 +80,7 @@ public class Dice
       else if (val < 1)
     	 n = 1;
       else n = 6;
-      sl.repaint();
+      game.repaint();
       return n;
    }
    static int getThrow() { return (int) (Math.random()*6) + 1;    }         

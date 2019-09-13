@@ -26,4 +26,8 @@ public class Ladder extends Entity {
 	public int getTop() {
 		return top;
 	}
+	
+	public int getLocation() {
+		return getBottom();
+	}
 }
