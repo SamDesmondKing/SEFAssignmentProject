@@ -10,6 +10,7 @@ public class HumanPiece extends Entity {
 	boolean paralysed;
 	ArrayList<Ladder> laddersClimbed;
 	int paralysedTurns = 0;
+	boolean isActivated = false;
 	
 	public HumanPiece(String name,int location) {
 		
@@ -25,6 +26,14 @@ public class HumanPiece extends Entity {
 	//Moves piece from location to target
 	public boolean move(int target) {
 		return true;
+	}
+	
+	public void activate() {
+		isActivated = true;
+	}
+	
+	public boolean getisActivated() {
+		return this.isActivated;
 	}
 	
 	public int getLocation() {

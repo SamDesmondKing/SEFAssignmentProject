@@ -1,6 +1,7 @@
 package main.View;
 
 import main.Controller.GameController;
+import main.Model.Board;
 import main.Model.Snake;
 
 public class GameInitiator {
@@ -10,9 +11,11 @@ public class GameInitiator {
    // This method constructs a GameController object and calls its control method 
    public static void main(String args[])
    {
-       GameController game = new GameController();
+	   Board board = new Board();
+	   Game game = new Game(board);
+       GameController gameController = new GameController(board,game);
 
-       game.control();
+       gameController.control();
 	   
    }
 

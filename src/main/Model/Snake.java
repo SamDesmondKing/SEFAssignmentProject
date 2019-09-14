@@ -37,4 +37,8 @@ public class Snake extends Entity
    public void setTail(int tail) {
 	   this.tail = tail;
    }
+   
+   public int getLocation() {
+	   return getTail();
+   }
 }
