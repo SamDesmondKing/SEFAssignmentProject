@@ -8,7 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import exceptions.SnakePlacementException;
-import main.Controller.GraphicsController;
+import main.View.Game;
 import main.Controller.SnakeController;
 import main.Model.Board;
 import main.Model.Dice;
@@ -31,7 +31,7 @@ public class BoardTests {
 	//check if dice exists
 	public void test2() {
 		Board board = new Board();
-		GraphicsController g = new GraphicsController(board);
+		Game g = new Game(board);
 		assertThat(board.getDice(),instanceOf(Dice.class));
 	}
 	/*

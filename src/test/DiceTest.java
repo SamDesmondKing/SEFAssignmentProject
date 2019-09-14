@@ -4,13 +4,14 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import main.Controller.GraphicsController;
+import main.View.Game;
 import main.Model.Board;
 import main.Model.Dice;
 
+
 public class DiceTest {
 	Board b = new Board();
-	GraphicsController g = new GraphicsController(b);
+	Game g = new Game(b);
 	Dice d = new Dice(g);
 	
 	@Test
@@ -53,7 +54,7 @@ public class DiceTest {
 			if (Dice.getThrow() > 6 || Dice.getThrow() <1) {
 				fail("Not yet implemented");
 			}else {
-				System.out.println("Success3!");
+				System.out.println("Success!");
 			}
 		}
 	}
