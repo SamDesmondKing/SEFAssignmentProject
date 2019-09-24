@@ -58,7 +58,9 @@ public class GameController {
 		this.bd = board;
 		this.game = game;
 		this.dice = bd.getDice();
-	}	      
+	}	    
+	
+	/*
 	public void setup(Board bd) throws Exception {
 		
 		
@@ -80,7 +82,8 @@ public class GameController {
 		boardController.add(new Ladder(38,86), bd);
 		laddersCount = 3;
 			  
-	}	   
+	}
+	*/	   
 	     
 	   // A method to print a message and to read an int value in the range specified
 	   int getInt(String message, int from, int to)
@@ -150,6 +153,8 @@ public class GameController {
 			   snakeTail = getInt(admin + ": Enter position for Snake " + count + "'s tail",0,100);
 			   try {
 				   boardController.add(new Snake(snakeHead,snakeTail), bd);
+				   //Gives snake to BoardController, which verifies conditions
+				   //BoardController adds snake to Board. 
 			   }
 			   catch(SnakePlacementException e) {
 				   plainMessage(e.getMessage());
@@ -163,6 +168,8 @@ public class GameController {
 			   ladderBottom = getInt(admin + ": Enter position for Ladder " + count + "'s bottom",0,100);
 			   try {
 				   boardController.add(new Ladder(ladderBottom,ladderTop), bd);
+				   //Gives ladder to BoardController, which verifies conditions
+				   //BoardController adds ladder to Board.
 			   }
 			   catch(LadderPlacementException e) {
 				   plainMessage(e.getMessage());
