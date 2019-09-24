@@ -58,31 +58,30 @@ public class GameController {
 		this.bd = board;
 		this.game = game;
 		this.dice = bd.getDice();
-	}
-/*	      
+	}	      
 	public void setup(Board bd) throws Exception {
 		
 		
-		boardController = new BoardController(bd);
+		boardController = new BoardController();
 		//int choice = 0;
 		//boardController.add(new Trap(25,3));
 		//boardController.add(new Trap(95,3));
-		trapsCount = 1;
+		
 	
-		boardController.add(new Snake(92,34));
-		boardController.add(new Snake(62,12));	  
-		boardController.add(new Snake(41,3));  
-		boardController.add(new Snake(99,10));  
+		boardController.add(new Snake(92,34), bd);
+		boardController.add(new Snake(62,12), bd);	  
+		boardController.add(new Snake(41,3), bd);  
+		boardController.add(new Snake(99,10), bd);  
 	  
 		snakesCount = 3;
 
-		boardController.add(new Ladder(7,49));
-		boardController.add(new Ladder(55,90));
-		boardController.add(new Ladder(38,86));
+		boardController.add(new Ladder(7,49), bd);
+		boardController.add(new Ladder(55,90), bd);
+		boardController.add(new Ladder(38,86), bd);
 		laddersCount = 3;
 			  
 	}	   
-*/	     
+	     
 	   // A method to print a message and to read an int value in the range specified
 	   int getInt(String message, int from, int to)
 	   {
@@ -150,7 +149,7 @@ public class GameController {
 			   snakeHead = getInt(admin + ": Enter position for Snake " + count + "'s head",0,100);
 			   snakeTail = getInt(admin + ": Enter position for Snake " + count + "'s tail",0,100);
 			   try {
-				   boardController.add(new Snake(snakeHead,snakeTail));
+				   boardController.add(new Snake(snakeHead,snakeTail), bd);
 			   }
 			   catch(SnakePlacementException e) {
 				   plainMessage(e.getMessage());
@@ -163,7 +162,7 @@ public class GameController {
 			   ladderTop = getInt(admin + ": Enter position for Ladder " + count + "'s top",0,100);
 			   ladderBottom = getInt(admin + ": Enter position for Ladder " + count + "'s bottom",0,100);
 			   try {
-				   boardController.add(new Ladder(ladderBottom,ladderTop));
+				   boardController.add(new Ladder(ladderBottom,ladderTop), bd);
 			   }
 			   catch(LadderPlacementException e) {
 				   plainMessage(e.getMessage());
@@ -242,7 +241,7 @@ public class GameController {
 					   snakeGuard = getInt(humanPlayer + ": Enter location for Snake "
 					   						+ "Guard",1,100);
 					   try {
-						   boardController.add(new SnakeGuard(snakeGuard));
+						   boardController.add(new SnakeGuard(snakeGuard), bd);
 						   plainMessage("Snake Guard placed! No moves this turn.");
 						   return;
 					   } 
@@ -324,7 +323,7 @@ public class GameController {
 				   continue;
 			   }
 			   try {
-				   snakeController.move(snake,target);
+				   snakeController.move(snake,target, bd);
 			   } 
 			   catch (SnakePlacementException e) {
 				   plainMessage(e.getMessage());
@@ -442,7 +441,7 @@ public class GameController {
 				   continue;
 			   }
 			   try {
-				   snakeController.move(snake,target);
+				   snakeController.move(snake,target, bd);
 			   } 
 			   catch (SnakePlacementException e) {
 				   plainMessage(e.getMessage());
@@ -523,9 +522,9 @@ public class GameController {
 
 	public void control() { 
 		
-		boardController = new BoardController(bd);
-		snakeController = new SnakeController(bd);
-		humanController = new HumanController(bd);
+		boardController = new BoardController();
+		snakeController = new SnakeController();
+		humanController = new HumanController();
 		game.clearMessages();  // clears the display board  
 		
 		admin = getString("Admin name : ");
@@ -542,13 +541,13 @@ public class GameController {
 		game.addMessage("Snake Player : ");
 		game.addMessage(snakePlayer);
 		game.addMessage("------------------------------");
-		      
+		
 		initialStage();
-		/*
+		
 		if (secondStage()) {
 			finalStage();
 		}
-		*/
+		
 		updateGame();
 		game.setPiece(pieces[0],100);
 		finalStage();

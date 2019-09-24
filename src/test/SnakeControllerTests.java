@@ -25,22 +25,22 @@ public class SnakeControllerTests {
 		
 		//Initializing controllers
 		Board b = new Board();
-		BoardController  bc = new BoardController(b);
-		SnakeController sc = new SnakeController(b);
+		BoardController  bc = new BoardController();
+		SnakeController sc = new SnakeController();
 		Snake s = new Snake(24,18);
 		SnakeGuard sg = new SnakeGuard(25);
 		
 		//Adding entities
 		try {
-			bc.add(s);
-			bc.add(sg);
+			bc.add(s, b);
+			bc.add(sg, b);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		
 		//Moving Snake to SnakeGuard location
 		//Expecting SnakePlacementException
-		sc.move(s, 25);	
+		sc.move(s, 25, b);	
 	}
 	
 	
@@ -51,22 +51,22 @@ public class SnakeControllerTests {
 		
 		//Initializing controllers
 		Board b = new Board();
-		BoardController  bc = new BoardController(b);
-		SnakeController sc = new SnakeController(b);
+		BoardController  bc = new BoardController();
+		SnakeController sc = new SnakeController();
 		Snake s1 = new Snake(24,18);
 		Snake s2 = new Snake(20,10);
 		
 		//Adding entities
 		try {
-			bc.add(s1);
-			bc.add(s2);
+			bc.add(s1, b);
+			bc.add(s2, b);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		
 		//Moving snake to location of
 		//other snake's head.
-		sc.move(s1, 20);
+		sc.move(s1, 20, b);
 	}
 	
 	//Testing exception thrown when snake moves to location of ladder head
@@ -75,22 +75,22 @@ public class SnakeControllerTests {
 		
 		//Initializing controllers
 		Board b = new Board();
-		BoardController  bc = new BoardController(b);
-		SnakeController sc = new SnakeController(b);
+		BoardController  bc = new BoardController();
+		SnakeController sc = new SnakeController();
 		Snake s1 = new Snake(24,18);
 		Ladder l1 = new Ladder(10,20);
 		
 		//Adding entities
 		try {
-			bc.add(s1);
-			bc.add(l1);
+			bc.add(s1, b);
+			bc.add(l1, b);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		
 		//Moving snake to location of
 		//ladder head.
-		sc.move(s1, 20);
+		sc.move(s1, 20, b);
 	}
 	
 	//Testing exception thrown when snake moves to location of ladder bottom
@@ -99,22 +99,22 @@ public class SnakeControllerTests {
 		
 		//Initializing controllers
 		Board b = new Board();
-		BoardController  bc = new BoardController(b);
-		SnakeController sc = new SnakeController(b);
+		BoardController  bc = new BoardController();
+		SnakeController sc = new SnakeController();
 		Snake s1 = new Snake(24,18);
 		Ladder l1 = new Ladder(10,20);
 		
 		//Adding entities
 		try {
-			bc.add(s1);
-			bc.add(l1);
+			bc.add(s1, b);
+			bc.add(l1, b);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		
 		//Moving snake to location of
 		//ladder bottom.
-		sc.move(s1, 10);	
+		sc.move(s1, 10, b);	
 	}
 	
 			
@@ -124,19 +124,19 @@ public class SnakeControllerTests {
 		
 		//Initializing controllers
 		Board b = new Board();
-		BoardController  bc = new BoardController(b);
-		SnakeController sc = new SnakeController(b);
+		BoardController  bc = new BoardController();
+		SnakeController sc = new SnakeController();
 		Snake s1 = new Snake(20,1);
 		
 		//Adding entities
 		try {
-			bc.add(s1);
+			bc.add(s1, b);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		
 		//Moving snake such that tail would go below zero.
-		sc.move(s1, 10);
+		sc.move(s1, 10, b);
 	}		
 	
 	
@@ -146,13 +146,13 @@ public class SnakeControllerTests {
 		
 		//Initializing controllers
 		Board b = new Board();
-		BoardController  bc = new BoardController(b);
-		SnakeController sc = new SnakeController(b);
+		BoardController  bc = new BoardController();
+		SnakeController sc = new SnakeController();
 		Snake s1 = new Snake(20,1);
 		
 		//Adding entities
 		try {
-			bc.add(s1);
+			bc.add(s1, b);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -167,13 +167,13 @@ public class SnakeControllerTests {
 		
 		//Initializing controllers
 		Board b = new Board();
-		BoardController  bc = new BoardController(b);
-		SnakeController sc = new SnakeController(b);
+		BoardController  bc = new BoardController();
+		SnakeController sc = new SnakeController();
 		Snake s1 = new Snake(20,1);
 		
 		//Adding entities
 		try {
-			bc.add(s1);
+			bc.add(s1, b);
 		} catch (Exception e) {
 			System.out.println(e);
 		}

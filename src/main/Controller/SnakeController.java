@@ -11,43 +11,42 @@ public class SnakeController {
 	
 	private static final int[] left = {1,20,21,40,41,60,61,80,81,100};
 	private static final int[] right = {10,11,30,31,50,51,70,71,90,91};
-	private Board board;
 	
-	//Constructor (so that we can see the state of the board to validate snake movement)
-	public SnakeController(Board board) {
-		this.board = board;
+	
+	//Constructor 
+	public SnakeController() {
 	}
 	
 	//Tells the selected Snake to move to the target location. Throws error if any issues
-	public void move(Snake thisSnake, int headTarget) throws SnakePlacementException {
+	public void move(Snake thisSnake, int headTarget, Board board) throws SnakePlacementException {
 
 		int headMove = headTarget - thisSnake.getHead();
 		int tailTarget = thisSnake.getTail() + headMove;
 		
 		//Checking for SnakeGuards at headTarget
-		for (int i = 0; i < this.board.getSG().size(); i++) {
-			if (this.board.getSG().get(i).getLocation() == headTarget) {
+		for (int i = 0; i < board.getSG().size(); i++) {
+			if (board.getSG().get(i).getLocation() == headTarget) {
 				throw new SnakePlacementException("Move invalid - snake guard there");
 			}
 		}
 		
 		//Checking for other snake heads at headTarget
-		for (int i = 0; i < this.board.getSS().size(); i++) {
-			if (this.board.getSS().get(i).getHead() == headTarget) {
+		for (int i = 0; i < board.getSS().size(); i++) {
+			if (board.getSS().get(i).getHead() == headTarget) {
 				throw new SnakePlacementException("Move invalid - already a snake head there");
 			}
 		}
 		
 		//Checking for ladderTops at headTarget
-				for (int i = 0; i < this.board.getLS().size(); i++) {
-					if (this.board.getLS().get(i).getTop() == headTarget) {
+				for (int i = 0; i < board.getLS().size(); i++) {
+					if (board.getLS().get(i).getTop() == headTarget) {
 						throw new SnakePlacementException("Move invalid - already a ladder top there");
 					}
 				}
 		
 		//Checking for ladderBottoms at headTarget
-		for (int i = 0; i < this.board.getLS().size(); i++) {
-			if (this.board.getLS().get(i).getBottom() == headTarget) {
+		for (int i = 0; i < board.getLS().size(); i++) {
+			if (board.getLS().get(i).getBottom() == headTarget) {
 				throw new SnakePlacementException("Move invalid - already a ladder base there");
 			}
 		}
