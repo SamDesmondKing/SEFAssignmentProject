@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-
 public class Board {
 	
 	private HumanPiece[] pieces = new HumanPiece[4];
@@ -11,7 +10,7 @@ public class Board {
 	private ArrayList<Snake> ss;
 	private ArrayList<Ladder> ls;
 	private ArrayList<SnakeGuard> snakeGuards;
-	private HashMap<Integer,Entity> board;
+	public HashMap<Entity,Integer> board;
 	int snakesCount = 0;
 	int laddersCount = 0;
 	int snakeGuardCount = 0;
@@ -20,36 +19,23 @@ public class Board {
 	public Board() {
 		
 		for (int i = 0; i < 4; i++) {
-			pieces[i] = new HumanPiece("Piece" + (i+1),1);
+			pieces[i] = new HumanPiece("Piece " + (i+1),1);
 		}
 		ss = new ArrayList<Snake>();
 		ls = new ArrayList<Ladder>();
 		snakeGuards = new ArrayList<SnakeGuard>();
-		board = new HashMap<Integer,Entity>();
+		board = new HashMap<Entity,Integer>();
 		
 	}
 
-	public void updateBoard() {
-		if (ss.size() != 0) {
-			for (Snake snake: ss) {
-				board.put(snake.getLocation(), snake);
-			}
+	public void updateBoard(Entity entity) {
+		if (entity != null) {
+			board.put(entity, entity.getLocation());
 		}
-		if (ls.size() != 0) {
-			for (Ladder ladder: ls) {
-				board.put(ladder.getLocation(), ladder);
-			}
-		}
-		if (snakeGuards.size() != 0) {
-			for (SnakeGuard snakeGuard: snakeGuards) {
-				board.put(snakeGuard.getLocation(), snakeGuard);
-			}
-		}
-		for (HumanPiece piece: pieces) {
-			if (piece != null) {
-				board.put(piece.getLocation(), piece);
-			}
-		}
+	}
+	
+	public HashMap<Entity,Integer> getBoard() {
+		return this.board;
 	}
 	
 	public Dice getDice() {
@@ -70,7 +56,7 @@ public class Board {
 	
 	public void setSS(int index, Snake snake) {
 		this.ss.add(index,snake);
-		updateBoard();
+		updateBoard(snake);
 	}
    
 	public ArrayList<Ladder> getLS() {
@@ -79,7 +65,7 @@ public class Board {
 	
 	public void setLS(int index, Ladder ladder) {
 		this.ls.add(index, ladder);
-		updateBoard();
+		updateBoard(ladder);
 	}
    
 	public ArrayList<SnakeGuard> getSnakeGuards() {
@@ -88,7 +74,7 @@ public class Board {
    
 	public void setSnakeGuards(int index, SnakeGuard snakeGuard) {
 		this.snakeGuards.add(index,snakeGuard);
-		updateBoard();
+		updateBoard(snakeGuard);
 	}
 	
 	public int getSnakesCount() {
@@ -121,29 +107,30 @@ public class Board {
    
 	public void setPiece(HumanPiece piece, int pos) {
 		piece.setLocation(pos);
-		updateBoard();
+		updateBoard(piece);
 	}
 	
 	public void clearLadders() {
 		this.ls.clear();
 		this.laddersCount = 0;
-		updateBoard();
 	}
 	
 	public void clearSnakeGuards() {
 		this.snakeGuards.clear();
 		this.snakeGuardCount = 0;
-		updateBoard();
+	}
+	
+	public void removeLadder(Ladder ladder) {
+		this.ls.remove(ladder);
+		this.laddersCount--;
 	}
 	
 	public void removeSnake(Snake snake) {
 		this.ss.remove(snake);
 		this.snakesCount--;
-		updateBoard();
 	}
 	
 	public void removePiece(int index) {
 		this.pieces[index] = null;
-		updateBoard();
 	}
 }

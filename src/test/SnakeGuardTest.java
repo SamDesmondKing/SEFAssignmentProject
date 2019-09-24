@@ -8,49 +8,33 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import exceptions.SnakeGuardPlacementException;
+import exceptions.SnakePlacementException;
 import main.Model.Entity;
+import main.Model.HumanPiece;
 import main.Model.SnakeGuard;
 
 public class SnakeGuardTest {
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
 	@Test
 	public void test1() {
-		SnakeGuard sg = new SnakeGuard(2);
-		boolean move = sg.move(2);
-		System.out.print(move+"--------------"+sg.getLocation());
-		
+		SnakeGuard g = new SnakeGuard(50);
+		assertEquals(g.getLocation(), 50);
 	}
-	
-	@Test
+
+	@Test (expected = SnakeGuardPlacementException.class) 
 	public void test2() {
-		SnakeGuard sg = new SnakeGuard(50);
-		boolean move = sg.move(2);
-		System.out.print(move+"--------------"+sg.getLocation());
-		
+		SnakeGuard g1 = new SnakeGuard(20);
+		SnakeGuard g2 = new SnakeGuard(30);
+		SnakeGuard g3 = new SnakeGuard(40);
+		SnakeGuard g4 = new SnakeGuard(50);
 	}
 	
 	@Test
 	public void test3() {
-		SnakeGuard sg = new SnakeGuard(80);
-		boolean move = sg.move(2);
-		System.out.print(move+"--------------"+sg.getLocation());
-		
+	    SnakeGuard g = new SnakeGuard(60);
+		g.move(60);
+		assertEquals(g.getLocation(), 60);
 	}
 
 }

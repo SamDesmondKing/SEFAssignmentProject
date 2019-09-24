@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-import exceptions.HumanPiecePlacementException;
 import exceptions.LadderPlacementException;
 import exceptions.SnakeGuardPlacementException;
 import exceptions.SnakePlacementException;
@@ -23,9 +22,6 @@ import main.View.Game;
 public class GameController {
 
 	private static final int maxSnakeGuard = 3;
-	private static final String sTurn = "Snake Player Turn";
-	private static final String hTurn = "Human Player Turn";
-	private static final String aTurn = "Admin's Turn";
 	
 	ArrayList<Snake> snakes = new ArrayList<Snake>();    	
 	ArrayList<Ladder> ladders = new ArrayList<Ladder>();  	
@@ -62,44 +58,43 @@ public class GameController {
 		this.bd = board;
 		this.game = game;
 		this.dice = bd.getDice();
-	}
-/*	      
+	}	    
+	
+	/*
 	public void setup(Board bd) throws Exception {
 		
 		
-		boardController = new BoardController(bd);
+		boardController = new BoardController();
 		//int choice = 0;
 		//boardController.add(new Trap(25,3));
 		//boardController.add(new Trap(95,3));
-		trapsCount = 1;
+		
 	
-		boardController.add(new Snake(92,34));
-		boardController.add(new Snake(62,12));	  
-		boardController.add(new Snake(41,3));  
-		boardController.add(new Snake(99,10));  
+		boardController.add(new Snake(92,34), bd);
+		boardController.add(new Snake(62,12), bd);	  
+		boardController.add(new Snake(41,3), bd);  
+		boardController.add(new Snake(99,10), bd);  
 	  
 		snakesCount = 3;
 
-		boardController.add(new Ladder(7,49));
-		boardController.add(new Ladder(55,90));
-		boardController.add(new Ladder(38,86));
+		boardController.add(new Ladder(7,49), bd);
+		boardController.add(new Ladder(55,90), bd);
+		boardController.add(new Ladder(38,86), bd);
 		laddersCount = 3;
 			  
-	}	   
-*/	     
+	}
+	*/	   
+	     
 	   // A method to print a message and to read an int value in the range specified
-	   int getInt(String message, int from, int to,String dialogHeader)
+	   int getInt(String message, int from, int to)
 	   {
 		   String s;
 		   int n = 0;
 		   boolean invalid;
-		   if (dialogHeader.equals("")) {
-			   dialogHeader = "Customized Dialog";
-		   }
 		   do {
 			 invalid = false;
 		     s = (String)JOptionPane.showInputDialog(
-		      null,  message,  dialogHeader,
+		      null,  message,  "Customized Dialog",
 		          JOptionPane.PLAIN_MESSAGE);	
 		      try {
 		         n = Integer.parseInt(s);
@@ -118,7 +113,9 @@ public class GameController {
 	   // A method to print a message and to read a String
 	   String getString(String message)
 	   {
+		   
 		   String s;
+		   
 		   do {
 			   
 			   s = (String)JOptionPane.showInputDialog(
@@ -144,7 +141,7 @@ public class GameController {
 	   void plainMessage(String message)
 	   {
 	        JOptionPane.showMessageDialog(null,
-			    message, "Info",
+			    message, "A prompt message",
 			    JOptionPane.PLAIN_MESSAGE);
 	   }
 	   
@@ -152,12 +149,12 @@ public class GameController {
 		   int count = 1,snakeHead,snakeTail,ladderTop,ladderBottom;
 		   
 		   while (count < 6) {
-			   snakeHead = getInt(admin + ": Enter position for Snake " + 
-					   			count + "'s head",0,100,aTurn);
-			   snakeTail = getInt(admin + ": Enter position for Snake " + 
-					   			count + "'s tail",0,100,aTurn);
+			   snakeHead = getInt(admin + ": Enter position for Snake " + count + "'s head",0,100);
+			   snakeTail = getInt(admin + ": Enter position for Snake " + count + "'s tail",0,100);
 			   try {
-				   boardController.add(new Snake(snakeHead,snakeTail));
+				   boardController.add(new Snake(snakeHead,snakeTail), bd);
+				   //Gives snake to BoardController, which verifies conditions
+				   //BoardController adds snake to Board. 
 			   }
 			   catch(SnakePlacementException e) {
 				   plainMessage(e.getMessage());
@@ -167,12 +164,12 @@ public class GameController {
 		   }
 		   count = 1;
 		   while (count < 6) {
-			   ladderTop = getInt(admin + ": Enter position for Ladder " + 
-					   			count + "'s top",0,100,aTurn);
-			   ladderBottom = getInt(admin + ": Enter position for Ladder " + 
-					   			count + "'s bottom",0,100,aTurn);
+			   ladderTop = getInt(admin + ": Enter position for Ladder " + count + "'s top",0,100);
+			   ladderBottom = getInt(admin + ": Enter position for Ladder " + count + "'s bottom",0,100);
 			   try {
-				   boardController.add(new Ladder(ladderBottom,ladderTop));
+				   boardController.add(new Ladder(ladderBottom,ladderTop), bd);
+				   //Gives ladder to BoardController, which verifies conditions
+				   //BoardController adds ladder to Board.
 			   }
 			   catch(LadderPlacementException e) {
 				   plainMessage(e.getMessage());
@@ -236,12 +233,12 @@ public class GameController {
 		   
 		   if (checkAllPieceParalysed() && snakeGuardCount == maxSnakeGuard) {
 			   updateParalysedPieces();
-			   plainMessage("All pieces paralysed and no snake guards left. Humans' turn skipped.");
+			   plainMessage("All pieces paralysed and no snake gaurds left. Humans' turn skipped.");
 			   return;
 		   }
 		   while (true) {
 			   pieceNumber = getInt(humanPlayer + ": Enter piece number to move or "
-			   							+ "5 to place snake guard ",1,5,hTurn);
+			   							+ "5 to place snake guard ",1,5);
 			   if (pieceNumber == 5 && snakeGuardCount == maxSnakeGuard) {
 				   plainMessage("Maximum number of snake guards already on the board");
 				   continue;
@@ -249,9 +246,9 @@ public class GameController {
 			   else if(pieceNumber == 5) {
 				   while (true) {
 					   snakeGuard = getInt(humanPlayer + ": Enter location for Snake "
-					   						+ "Guard",1,100,hTurn);
+					   						+ "Guard",1,100);
 					   try {
-						   boardController.add(new SnakeGuard(snakeGuard));
+						   boardController.add(new SnakeGuard(snakeGuard), bd);
 						   plainMessage("Snake Guard placed! No moves this turn.");
 						   return;
 					   } 
@@ -268,8 +265,7 @@ public class GameController {
 			   plainMessage("Piece is paralysed!");
 		   }
 		   location = piece.getLocation();
-		   val = getInt(humanPlayer + ": Enter 0 to throw dice. "
-		   		+ "Enter 1 - 6 for Testing.", 0, 6,hTurn);
+		   val = getInt(humanPlayer + ": Enter 0 to throw dice. Enter 1 - 6 for Testing.", 0, 6);
 		   if ( val == 0)
 		          val = dice.roll();
 		      else
@@ -321,12 +317,11 @@ public class GameController {
 	   
 	   public void secondStageSnakePlayerTurn() {
 		   int direction, target;
-		   snakeNumber = getInt(snakePlayer + ": Enter Snake "
-		   				+ "number to move ",1,5,"Snake Player Turn");
+		   snakeNumber = getInt(snakePlayer + ": Enter Snake number to move ",1,5);
 		   snake = snakes.get(snakeNumber - 1);
 		   while (true) {
 			   direction = getInt(snakePlayer + ": Enter number for direction - 1 for up, "
-							+ "2 for down, 3 for left, 4 for right ",1,4,sTurn);
+							+ "2 for down, 3 for left, 4 for right ",1,4);
 			   try {
 				   target = snakeController.getTarget(snake, direction);
 			   }
@@ -335,7 +330,7 @@ public class GameController {
 				   continue;
 			   }
 			   try {
-				   snakeController.move(snake,target);
+				   snakeController.move(snake,target, bd);
 			   } 
 			   catch (SnakePlacementException e) {
 				   plainMessage(e.getMessage());
@@ -386,8 +381,7 @@ public class GameController {
 	   public void finalStageHumanPlayerTurn() {
 		   int move;
 		   while (true) {
-			   pieceNumber = getInt(humanPlayer + ": Enter piece "
-			   		+ "number to move",1,4,hTurn);
+			   pieceNumber = getInt(humanPlayer + ": Enter piece number to move",1,4);
 			   piece = pieces[pieceNumber - 1];
 			   if (piece.getisActivated()) {
 				   plainMessage("This piece has reached 100 and cannot move!");
@@ -397,13 +391,8 @@ public class GameController {
 			   System.out.println(moves.toString());
 			   game.setMoves(moves);
 			   game.addMessage("Moves: " + moves.toString());
-			   move = getInt(humanPlayer + ": Enter legible "
-			   		+ "location to move to",1,100,hTurn);
-			   
-			   try {
-				   humanController.moveVerifier(move,moves);
-			   }
-			   catch (HumanPiecePlacementException e){
+			   move = getInt(humanPlayer + ": Enter legible location to move to",1,100);
+			   if (!moves.contains(move)) {
 				   game.clearMoves();
 				   if (("Moves: "+moves.toString()).length() > 30) {
 					   game.clearMessages(2);
@@ -414,7 +403,6 @@ public class GameController {
 				   plainMessage("Can't move there, pick from greyed boxes");
 				   continue;
 			   }
-			   
 			   if (("Moves: "+moves.toString()).length() > 30) {
 				   game.clearMessages(2);
 			   }
@@ -448,11 +436,10 @@ public class GameController {
 		   int direction, target;
 		   
 		   while (true) {
-			   snakeNumber = getInt(snakePlayer + ": Enter Snake number "
-			   		+ "to move ",1,snakes.size(),sTurn);
+			   snakeNumber = getInt(snakePlayer + ": Enter Snake number to move ",1,snakes.size());
 			   snake = snakes.get(snakeNumber - 1);
 			   direction = getInt(snakePlayer + ": Enter number for direction - 1 for up, "
-							+ "2 for down, 3 for left, 4 for right ",1,4,sTurn);
+							+ "2 for down, 3 for left, 4 for right ",1,4);
 			   try {
 				   target = snakeController.getTarget(snake, direction);
 			   }
@@ -461,7 +448,7 @@ public class GameController {
 				   continue;
 			   }
 			   try {
-				   snakeController.move(snake,target);
+				   snakeController.move(snake,target, bd);
 			   } 
 			   catch (SnakePlacementException e) {
 				   plainMessage(e.getMessage());
@@ -542,8 +529,8 @@ public class GameController {
 
 	public void control() { 
 		
-		boardController = new BoardController(bd);
-		snakeController = new SnakeController(bd);
+		boardController = new BoardController();
+		snakeController = new SnakeController();
 		humanController = new HumanController();
 		game.clearMessages();  // clears the display board  
 		
@@ -561,19 +548,18 @@ public class GameController {
 		game.addMessage("Snake Player : ");
 		game.addMessage(snakePlayer);
 		game.addMessage("------------------------------");
-		      
+		
 		initialStage();
 		
 		if (secondStage()) {
 			finalStage();
 		}
 		
-		/*
 		updateGame();
 		game.setPiece(pieces[0],100);
-		pieces[0].activate();
 		finalStage();
-		*/
+		
+		
 	   }
 	
 	public static boolean getStage1() {

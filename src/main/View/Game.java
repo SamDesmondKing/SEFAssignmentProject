@@ -1,6 +1,7 @@
 package main.View;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.awt.BorderLayout;
 
 import java.awt.Color;
@@ -8,12 +9,14 @@ import java.awt.Container;
 import java.awt.Font;
 import java.awt.Graphics;
 
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import main.Controller.GameController;
 import main.Model.Board;
 import main.Model.Dice;
+import main.Model.Entity;
 import main.Model.HumanPiece;
 import main.Model.Ladder;
 import main.Model.Snake;
@@ -26,14 +29,17 @@ public class Game extends JPanel implements Runnable{
 	private double factor = 0.2;
 	private int XMARGIN = 20;
 	private int YMARGIN = 20;
-	private HumanPiece[] pieces = new HumanPiece[4];
+	//private HumanPiece[] pieces = new HumanPiece[4];
 	private String bLines[] = new String[19];
 	private int bCount = 0;
-	private Dice dice;   
+	private Dice dice;
+	/*
     private ArrayList<Snake> ss;
     private ArrayList<Ladder> ls;
     private ArrayList<SnakeGuard> snakeGuards;
+    */
     private ArrayList<Integer> moves = new ArrayList<Integer>();
+    private HashMap<Entity,Integer> bd;
     int snakesCount;
     int laddersCount;
     int snakeGuardCount;
@@ -51,6 +57,7 @@ public class Game extends JPanel implements Runnable{
 		frame.setVisible(true);
 		new Thread(this).start();
 		
+		this.bd = new HashMap<Entity,Integer>();
 		dice = new Dice(this);
 		board.setDice(dice);
 		
@@ -111,11 +118,43 @@ public class Game extends JPanel implements Runnable{
    
    public void clearMoves() {
 	   this.moves.clear();
+	   repaint();
    }
-	
+   
    public void drawPieces(Graphics g) {
-	   this.pieces = board.getPieces();
+	  //this.pieces = board.getPieces();
+	   this.bd = board.getBoard();
 	   
+	  for (Entity entity: bd.keySet()) {
+		  if (entity.getClass() == HumanPiece.class) {
+			  HumanPiece piece = (HumanPiece) entity;
+			  if (piece.getName().equals("Piece 1")) {
+				  g.setColor(Color.WHITE);   
+				  g.fillOval((int)getX(piece.getLocation())-10,getY(piece.getLocation())-10,20,20); 
+				  g.setColor(Color.BLACK);   
+				  g.drawString("1",(int)getX(piece.getLocation())-5,getY(piece.getLocation())+5); 
+			  }
+			  else if (piece.getName().equals("Piece 2")) {
+				  g.setColor(Color.RED);   
+		          g.fillOval((int)getX(piece.getLocation())+10,getY(piece.getLocation())-10,20,20); 
+		          g.setColor(Color.BLACK);   
+		          g.drawString("2",(int)getX(piece.getLocation())+15,getY(piece.getLocation())+5);
+			  }
+			  else if (piece.getName().equals("Piece 3")) {
+				  g.setColor(Color.GREEN);   
+		          g.fillOval((int)getX(piece.getLocation())-10,getY(piece.getLocation())+10,20,20); 
+		          g.setColor(Color.BLACK);   
+		          g.drawString("3",(int)getX(piece.getLocation())-5,getY(piece.getLocation())+25); 
+			  }
+			  else {
+				  g.setColor(Color.CYAN);   
+		          g.fillOval((int)getX(piece.getLocation())+10,getY(piece.getLocation())+10,20,20); 
+		          g.setColor(Color.BLACK);   
+		          g.drawString("4",(int)getX(piece.getLocation())+15,getY(piece.getLocation())+25); 
+			  }
+		  }
+	  }
+	   /*
       if (pieces.length > 0)
       {
     	  if (pieces[0] != null) {
@@ -153,6 +192,11 @@ public class Game extends JPanel implements Runnable{
 	         g.drawString("4",(int)getX(pieces[3].getLocation())+15,getY(pieces[3].getLocation())+25); 
          }
       }
+      */
+   }
+   
+   public void updateView(HashMap<Entity,Integer> bd) {
+	   this.bd = bd;
    }
    
    public void setPiece(HumanPiece piece, int pos) {
@@ -270,14 +314,16 @@ public class Game extends JPanel implements Runnable{
 
    public void paintComponent(Graphics g) {
 		
-		
+		this.bd = board.getBoard();
 		this.dice = board.getDice();
+		/*
 		this.ss = board.getSS();
 		this.ls = board.getLS();
 		this.snakeGuards = board.getSnakeGuards();
 		this.snakesCount = board.getSnakesCount();
 		this.laddersCount = board.getLaddersCount();
 		this.snakeGuardCount = board.getSnakeGuardCount();
+		*/
 		//System.out.println(snakesCount);
 		//System.out.println(trapsCount);
 		//System.out.println(trapsCount);
@@ -291,15 +337,37 @@ public class Game extends JPanel implements Runnable{
 				else 
 					g.setColor(Color.ORANGE);
 				g.fillRect(XMARGIN + 40*i,YMARGIN+40*j, 40,40);
-				
 			}
-
 		}
+		
 		g.setColor(Color.GRAY);
 		for (Integer move: moves) {
 			g.fillRect(getX(move)-10, getY(move)-10, 40, 40);
 		}
 		
+		g.setColor(Color.BLACK);
+		for ( int i=0; i<100; i++)    	  
+			g.drawString(""+(i+1), getX(i+1),getY(i+1)+20);
+		
+		
+		for (Entity entity: bd.keySet()) {
+			g.setColor(Color.BLACK);
+			if (entity.getClass() == SnakeGuard.class) {
+				int num = entity.getLocation(); 
+				g.setColor(Color.BLUE); 	 	
+				g.fillRect(getX(num) -10 ,getY(num)-10,40,40);
+			}
+			else if (entity.getClass() == Snake.class) {
+				Snake snake = (Snake) entity;
+				drawSnake(g,snake.getHead(), snake.getTail());
+			}
+			else if (entity.getClass() == Ladder.class) {
+				Ladder ladder = (Ladder) entity;
+				drawLadder(g,ladder.getBottom(), ladder.getTop());
+			}
+		}
+		
+		/*
 		g.setColor(Color.BLACK);
 		for (int k =0; k<snakeGuardCount; k++) {
 			int num = snakeGuards.get(k).getLocation(); 
@@ -314,7 +382,7 @@ public class Game extends JPanel implements Runnable{
 		}
 		for (int i=0; i<laddersCount; i++)
 			drawLadder(g,ls.get(i).getBottom(), ls.get(i).getTop());
-
+		*/
 		g.setColor(Color.GRAY);
 		g.fill3DRect(430,40,200,340,true);
 
@@ -332,4 +400,5 @@ public class Game extends JPanel implements Runnable{
 			drawPieces(g);
 		dice.draw(g);
   }
+
 }

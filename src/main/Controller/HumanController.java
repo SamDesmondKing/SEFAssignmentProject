@@ -126,8 +126,6 @@ public class HumanController {
 		return location-((i*2)+1);
 	}
 	
-	
-	
 	public void finalStageDiagonalMoves(HumanPiece piece) {
 		int location = piece.getLocation(), move;
 		String[] diagonalMovesString = {"U1L1","U1R1","D1L1","D1R1"};
@@ -160,6 +158,7 @@ public class HumanController {
 			}
 		}
 	}
+	
 	public void finalStageKnightMoves(HumanPiece piece) {
 		int location = piece.getLocation(),move,move2;
 		String[] knightMovesString = {"U1L2","U2L1","U1R2","U2R1","D1L2","D2L1"

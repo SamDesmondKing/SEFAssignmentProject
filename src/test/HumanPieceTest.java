@@ -10,53 +10,32 @@ import org.junit.Test;
 
 import main.Model.Board;
 import main.Model.HumanPiece;
+import main.Model.Ladder;
+import main.Model.Snake;
+import main.Model.SnakeGuard;
 
 public class HumanPieceTest {
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
 	@Test
 	public void test1() {
-		HumanPiece hp=new HumanPiece("test1", 100);
-		
+		HumanPiece hp=new HumanPiece("1", 1);
 		System.out.println("location:"+hp.getLocation());
-		System.out.println("ParalysedTurn:"+hp.getParalysedTurns());
-		System.out.println("LaddersClimbed:"+hp.getLaddersClimbed());
-		System.out.println("Paralyse:"+hp.getParalyse());
+		
 	}
 
 	@Test
 	public void test2() {
-		HumanPiece hp=new HumanPiece("test2", 1);
-		
-		System.out.println("location:"+hp.getLocation());
-		System.out.println("ParalysedTurn:"+hp.getParalysedTurns());
-		System.out.println("LaddersClimbed:"+hp.getLaddersClimbed());
-		System.out.println("Paralyse:"+hp.getParalyse());
-		
+		HumanPiece hp=new HumanPiece("2", 25);
+		Ladder l = new Ladder(25,35);
+		l.activate(hp);
+		assertEquals(hp.getLaddersClimbed(), 1);
 	}
 	
 	@Test
 	public void test3() {
-		HumanPiece hp=new HumanPiece("test1", 50);
-		
-		System.out.println("location:"+hp.getLocation());
-		System.out.println("ParalysedTurn:"+hp.getParalysedTurns());
-		System.out.println("LaddersClimbed:"+hp.getLaddersClimbed());
-		System.out.println("Paralyse:"+hp.getParalyse());
+		HumanPiece hp=new HumanPiece("3", 50);
+		Snake s = new Snake(20,10);
+		s.activate(hp);
+		assertEquals(hp.getParalysedTurns(), 3);
 	}
 }

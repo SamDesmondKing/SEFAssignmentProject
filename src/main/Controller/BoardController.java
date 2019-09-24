@@ -10,7 +10,6 @@ import main.Model.SnakeGuard;
 
 public class BoardController {
 
-	private Board board;
 	private int snakesCount;
 	private int laddersCount;
 	private int snakeGuardsCount;
@@ -29,12 +28,11 @@ public class BoardController {
 	
 
 	// Constructor
-	public BoardController(Board board) {
-		this.board = board;
+	public BoardController() {
 	}
 
 	// Add Snake
-	public void add(Snake thisSnake) throws SnakePlacementException {
+	public void add(Snake thisSnake, Board board) throws SnakePlacementException {
 
 		this.snakesCount = board.getSnakesCount();
 
@@ -56,19 +54,19 @@ public class BoardController {
 		}
 
 		// No snake head on existing ladder head/base
-		for (Ladder i : this.board.getLS()) {
+		for (Ladder i : board.getLS()) {
 			System.out.println("c");
 			if (thisSnake.getHead() == i.getTop() || thisSnake.getHead() == i.getBottom()) {
-				throw new SnakePlacementException("Snake position invalid (Ladder Clash)");
+				throw new SnakePlacementException("Snake position invalid (No snake head allowed on existing ladder head/base)");
 			}
 		}
 
 		// No snake head on another snake head / either side of another snake head
-		for (Snake i : this.board.getSS()) {
+		for (Snake i : board.getSS()) {
 			System.out.println("v");
 			if (thisSnake.getHead() == i.getHead() || thisSnake.getHead() == (i.getHead() - 1)
 					|| thisSnake.getHead() == (i.getHead() + 1)) {
-				throw new SnakePlacementException("Snake position invalid (Snake Clash)");
+				throw new SnakePlacementException("Snake position invalid (Snakes too close together)");
 			}
 		}
 		
@@ -80,13 +78,13 @@ public class BoardController {
 			}
 			else {
 				System.out.println("n");
-				throw new SnakePlacementException("Snake position invalid (Top Twenty Snake Clash)");
+				throw new SnakePlacementException("Snake position invalid (Only one snake allowed above location 79.)");
 			}
 		} 
 		
 		//Horizontal check
 		if (this.horizontalCheck(thisSnake.getHead(), thisSnake.getTail())) {
-			throw new SnakePlacementException("Snake position invalid (horizontal entity)");
+			throw new SnakePlacementException("Snake position invalid (No horizontal snakes allowed.)");
 		}
 
 		// Adding snake to Board
@@ -96,7 +94,7 @@ public class BoardController {
 	}
 
 	// Add Ladder
-	public void add(Ladder thisLadder) throws LadderPlacementException {
+	public void add(Ladder thisLadder, Board board) throws LadderPlacementException {
 
 		this.laddersCount = board.getLaddersCount();
 
@@ -112,31 +110,31 @@ public class BoardController {
 		
 		//Check top/bottom not in same place and top is above bottom
 		if (thisLadder.getBottom() >= thisLadder.getTop()) {
-			throw new LadderPlacementException("Ladder position invalid (bottom on or above top");
+			throw new LadderPlacementException("Ladder position invalid (Bottom of ladder is on or above top)");
 		}
 
 		// Check ladder doesn't begin or end on a snake head
-		for (Snake i : this.board.getSS()) {
+		for (Snake i : board.getSS()) {
 			if (i.getHead() == thisLadder.getTop() || i.getHead() == thisLadder.getBottom()) {
-				throw new LadderPlacementException("Ladder position invalid (Snake Clash)");
+				throw new LadderPlacementException("Ladder position invalid (Ladder clashes with existing snake)");
 			}
 		}
 
 		// Check ladder top/bottom isn't placed on another ladder top
-		for (Ladder i : this.board.getLS()) {
+		for (Ladder i : board.getLS()) {
 			if (i.getTop() == thisLadder.getBottom() || i.getTop() == thisLadder.getTop()) {
-				throw new LadderPlacementException("Ladder position invalid (Ladder Clash)");
+				throw new LadderPlacementException("Ladder position invalid (Ladders too close together)");
 			}
 		}
 
 		// Check ladder top and bottom (no position 1 or 100)
 		if (thisLadder.getBottom() == 1 || thisLadder.getTop() == 100) {
-			throw new LadderPlacementException("Ladder position invalid (1 or 100)");
+			throw new LadderPlacementException("Ladder position invalid (No laddet at position 1 or 100)");
 		}
 		
 		//Horizontal check
 		if (this.horizontalCheck(thisLadder.getTop(), thisLadder.getBottom())) {
-			throw new LadderPlacementException("Ladder position invalid (horizontal entity)");
+			throw new LadderPlacementException("Ladder position invalid (Ladders can't be horizontal)");
 		}
 
 		// Adding ladder to Board
@@ -144,10 +142,10 @@ public class BoardController {
 		board.setLaddersCount(++laddersCount);
 	}
 	
-	public void add(SnakeGuard thisSnakeGuard) throws SnakeGuardPlacementException{
-		this.snakeGuardsCount = this.board.getSnakeGuardCount();
+	public void add(SnakeGuard thisSnakeGuard, Board board) throws SnakeGuardPlacementException{
+		this.snakeGuardsCount = board.getSnakeGuardCount();
 		
-		for (Snake s : this.board.getSS()) {
+		for (Snake s : board.getSS()) {
 			if (thisSnakeGuard.getLocation() == s.getHead()) {
 				throw new SnakeGuardPlacementException("Cannot place trap there!");
 			}
