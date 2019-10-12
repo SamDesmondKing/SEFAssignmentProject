@@ -28,10 +28,31 @@ public class Board {
 		
 	}
 
+	//Adds entity to board HashMap
 	public void updateBoard(Entity entity) {
 		if (entity != null) {
 			board.put(entity, entity.getLocation());
 		}
+	}
+	
+	//Updates board with contents of entity arrays
+	public void updateBoard() {
+		
+		board.clear();
+		
+		for (Snake i : this.ss) {
+			board.put(i, i.getLocation());
+		}
+		for (Ladder i : this.ls) {
+			board.put(i, i.getLocation());
+		}
+		for (SnakeGuard i : this.snakeGuards) {
+			board.put(i, i.getLocation());
+		}
+		for (HumanPiece i : this.pieces) {
+			board.put(i, i.getLocation());
+		}
+	
 	}
 	
 	public HashMap<Entity,Integer> getBoard() {
@@ -104,6 +125,10 @@ public class Board {
 	public HumanPiece[] getPieces() {
 		return this.pieces;
 	}
+	
+	public HumanPiece getPiece(int index) {
+		return this.pieces[index];
+	}
    
 	public void setPiece(HumanPiece piece, int pos) {
 		piece.setLocation(pos);
@@ -125,9 +150,11 @@ public class Board {
 		this.laddersCount--;
 	}
 	
+	// Bug here - snake removed from array but not graphically. 
 	public void removeSnake(Snake snake) {
 		this.ss.remove(snake);
 		this.snakesCount--;
+		this.updateBoard();
 	}
 	
 	public void removePiece(int index) {

@@ -29,15 +29,10 @@ public class Game extends JPanel implements Runnable{
 	private double factor = 0.2;
 	private int XMARGIN = 20;
 	private int YMARGIN = 20;
-	//private HumanPiece[] pieces = new HumanPiece[4];
 	private String bLines[] = new String[19];
 	private int bCount = 0;
 	private Dice dice;
-	/*
-    private ArrayList<Snake> ss;
-    private ArrayList<Ladder> ls;
-    private ArrayList<SnakeGuard> snakeGuards;
-    */
+
     private ArrayList<Integer> moves = new ArrayList<Integer>();
     private HashMap<Entity,Integer> bd;
     int snakesCount;
