@@ -491,8 +491,12 @@ public class GameController {
 		game.addMessage(snakePlayer);
 		game.addMessage("------------------------------");
 
+		//Set up the board
 		initialStage();
-
+		
+		//Place all the pieces on the board
+		bd.updateBoard();
+		
 		if (secondStage()) {
 			finalStage();
 		}
