@@ -14,17 +14,6 @@ public class BoardController {
 	private int laddersCount;
 	private int snakeGuardsCount;
 	private boolean topTwentySnake;
-
-// - Should be allowed to lay 5 snakes and 5 ladders. DONE 
-// - Difference between snake head/tail or ladder top/base cannot be more than 30 DONE
-// - Ladder top/base cannot be placed on a snake head DONE
-// - Ladder base cannot be placed on another ladder's head DONE
-// - No ladder base at location 1 and no ladder top at location 100 DONE
-// - Snake head cannot be placed on top of an existing ladder head/base DONE
-// - Snake head cannot be placed +-1 either side of another snake head DONE
-// - Only one snake in locations 81 to 100 at any one time DONE
-// - Snake head cannot be on or behind tail, and vice versa for ladder DONE
-// - Snakes and ladders cannot be horizontal DONE
 	
 
 	// Constructor

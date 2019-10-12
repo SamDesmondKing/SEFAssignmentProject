@@ -104,6 +104,10 @@ public class Board {
 	public HumanPiece[] getPieces() {
 		return this.pieces;
 	}
+	
+	public HumanPiece getPiece(int index) {
+		return this.pieces[index];
+	}
    
 	public void setPiece(HumanPiece piece, int pos) {
 		piece.setLocation(pos);
