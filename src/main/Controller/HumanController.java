@@ -1,6 +1,9 @@
 package main.Controller;
 
 import java.util.stream.IntStream;
+
+import exceptions.HumanPiecePlacementException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -211,6 +214,12 @@ public class HumanController {
 					}
 				}
 			}	
+		}
+	}
+	
+	public void moveVerifier(int move,ArrayList<Integer> moves) throws HumanPiecePlacementException{
+		if (!moves.contains(move)) {
+			throw new HumanPiecePlacementException("Not a valid move!");
 		}
 	}
 	

@@ -13,7 +13,7 @@ public class HumanPiece extends Entity {
 	boolean isActivated = false;
 	
 	public HumanPiece(String name,int location) {
-		
+		this.name = name;
 		this.location = location;
 		laddersClimbed = new ArrayList<Ladder>();
 	}
@@ -42,6 +42,10 @@ public class HumanPiece extends Entity {
 	
 	public void setLocation(int location) {
 		this.location = location;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 	
 	public void setParalyse(boolean status) {

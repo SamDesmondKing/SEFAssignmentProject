@@ -2,7 +2,6 @@ package main.View;
 
 import main.Controller.GameController;
 import main.Model.Board;
-import main.Model.Snake;
 
 public class GameInitiator {
 
