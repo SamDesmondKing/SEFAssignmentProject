@@ -13,8 +13,8 @@ public class GameInitiator {
    {
 	   Board board = new Board();
 	   Game game = new Game(board);
-       GameController gameController = new GameController(board,game);
-
+	   GameController gameController = new GameController(board,game);
+	   
        gameController.control();
 	   
    }

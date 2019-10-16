@@ -18,6 +18,8 @@ import main.Model.Player;
 import main.Model.Snake;
 import main.Model.SnakeGuard;
 import main.View.Game;
+import main.View.Login;
+import main.View.Register;
 
 public class GameController {
 
@@ -31,9 +33,9 @@ public class GameController {
 	int snakesCount = 0;				 
 	int laddersCount = 0;	
 	int snakeGuardCount = 0;
-	private String admin;
-	private String humanPlayer;
-	private String snakePlayer;
+	public static String admin;
+	public static String humanPlayer;
+	public static String snakePlayer;
 	private Player[] players = new Player[2];
 	private HumanPiece[] pieces = new HumanPiece[4];
 	private HumanPiece piece;
@@ -533,10 +535,41 @@ public class GameController {
 		snakeController = new SnakeController();
 		humanController = new HumanController();
 		game.clearMessages();  // clears the display board  
-		
+		/*
 		admin = getString("Admin name : ");
 		humanPlayer = getString("Human player name : ");
 		snakePlayer = getString("Snake Player name : ");
+		*/
+	   Login login = new Login();
+	   login.runLogin(1);
+	   synchronized(login) {
+		    try {
+				login.wait(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	   }
+	   login = new Login();
+	   login.runLogin(2);
+	   synchronized(login) {
+		   try {
+				login.wait(10000);
+			   } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			   }
+	   }
+	   login.runLogin(3);
+	   synchronized(login) {
+		   try {
+				login.wait(10000);
+			   } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			   }
+	   }
+		
 		players[0] = new Player(humanPlayer,"Human");
 		players[1] = new Player(admin,"Snake");
 		
@@ -567,5 +600,29 @@ public class GameController {
 	}
 	public static boolean getfinalStageHumanPlayerTurn() {
 		return finalStageHumanPlayerTurn;
+	}
+	
+	public static String getAdmin() {
+		return admin;
+	}
+	
+	public static String getHuman() {
+		return humanPlayer;
+	}
+	
+	public static String getSnake() {
+		return snakePlayer;
+	}
+	
+	public static void setAdmin(String name) {
+		GameController.admin= name;
+	}
+	
+	public static void setHuman(String name) {
+		GameController.humanPlayer= name;
+	}
+	
+	public static void setSnake(String name) {
+		GameController.snakePlayer= name;
 	}
 }
