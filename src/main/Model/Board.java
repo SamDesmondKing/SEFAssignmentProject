@@ -10,6 +10,7 @@ public class Board implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 	private HumanPiece[] pieces = new HumanPiece[4];
 	private Dice dice;
 	private ArrayList<Snake> ss;
@@ -19,10 +20,6 @@ public class Board implements Serializable {
 	int snakesCount = 0;
 	int laddersCount = 0;
 	int snakeGuardCount = 0;
-	private int stage;
-	private String admin;
-	private String humanPlayer;
-	private String snakePlayer;
 
 	
 	public Board() {
@@ -169,42 +166,4 @@ public class Board implements Serializable {
 	public void removePiece(int index) {
 		this.pieces[index] = null;
 	}
-
-	public void setStage(int i) {
-		this.stage = i;
-		
-	}
-	
-	public int getStage() {
-		return stage;
-	}
-
-	public void setAdminPlayer(String admin) {
-		this.admin = admin;
-		
-	}
-
-	public void setHumanPlayer(String humanPlayer) {
-		this.humanPlayer = humanPlayer;
-		
-	}
-	
-	public void setSnakePlayer(String snakePlayer) {
-		this.snakePlayer = snakePlayer;
-		
-	}
-
-	public String getAdminPlayer() {
-		return admin;
-	}
-	
-	public String getHumanPlayer() {
-		return humanPlayer;
-	}
-	
-	public String getSnakePlayer() {
-		return snakePlayer;
-	}
-
-	
 }

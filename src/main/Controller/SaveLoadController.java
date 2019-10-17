@@ -1,50 +1,62 @@
 package main.Controller;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
+import javax.swing.JOptionPane;
 
 import main.Model.Board;
 import main.View.Game;
+import main.View.SaveLoadGui;
 
-public class SaveLoadController {
-	Board board;
-	Game game;
-	GameController gameController;
+public class SaveLoadController implements ActionListener, Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	GameController gc;
+	Board bd;
+	Game g;
+	SaveLoadGui slg;
+	ActionEvent e;
 	
-	public SaveLoadController(Board board, Game game, GameController gameController) {
-		this.board = board;
-		this.game  = game;
-		this.gameController = gameController;
+	public SaveLoadController(SaveLoadGui slg) {
+		this.slg = slg;
 	}
-	public static void save(Board board, String fileName) throws Exception {
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		this.e = e;
 		
-		try(ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(Paths.get(fileName + "board")))){
-			oos.writeObject(board);
-			oos.close();
+		if (e.getSource().equals(slg.getNewGameBtn())) {
+			slg.getFrame().dispose();
+			this.gc = new GameController();
+			gc.getPlayers();
+		}
+		else if (e.getSource().equals(slg.getLoadGameBtn())) {
+			slg.getFrame().dispose();
+			slg.loadDialog();
+		}
+		else if (e.getSource().equals(slg.getLoadSubmitBtn())) {
+			loadGame();
+		}
+		else if (e.getSource().equals(slg.getCloseBtn3())) {
+			slg.getBox3().dispose();
+			slg.initialWindow();
 		}
 	}
 	
-	public static void save(Game game, String fileName) throws Exception {
-		try(ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(Paths.get(fileName + "game")))){
-			oos.writeObject(game);
-			oos.close();
+	public void loadGame() {
+		try {
+			this.gc = (GameController) ResourceManager.load(slg.getLoadTxt().getText());
+			slg.getBox3().dispose();
+			JOptionPane.showMessageDialog(null, "Loaded " + slg.getLoadTxt().getText() + " Successfully.");
+			gc.initialise();
+			gc.checkStage();
+		} catch (Exception e1) {
+			JOptionPane.showMessageDialog(null, "Could not load, because " + e1);
+			
 		}
-	}
-	
-	public static void save(GameController gameController, String fileName) throws Exception {
-		try(ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(Paths.get(fileName + "gameController")))){
-			oos.writeObject(gameController);
-			oos.close();
-		}
-	}
-	
-	
-	public static Object load(String fileName) throws Exception {
-		try (ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(Paths.get(fileName)))) {
-			return ois.readObject();
-		}
+		
 	}
 }

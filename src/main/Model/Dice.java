@@ -9,7 +9,9 @@ public class Dice implements Serializable
    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 5L;
+	private static final long serialVersionUID = 1L;
+	
+	
 int n = -1;
    Game game;
    
@@ -71,7 +73,7 @@ int n = -1;
          n = (int) (Math.random()*6) + 1;
          set(n);
          try {
-           Thread.sleep(100);
+          // Thread.sleep(100);
          }
          catch(Exception e) {}
       }

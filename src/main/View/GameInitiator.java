@@ -1,26 +1,32 @@
 package main.View;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import main.Controller.GameController;
-import main.Controller.SaveLoadController;
+import main.Controller.PrimaryController;
 import main.Model.Board;
 
-public class GameInitiator {
+public class GameInitiator implements Serializable {
 
    
-	
-	
-	
    // The very first method to be called
    // This method constructs a GameController object and calls its control method 
    public static void main(String args[])
    {
-	   Board board = new Board();
-	   Game game = new Game(board);
-       GameController gameController = new GameController(board,game);
-       SaveLoadController saveLoadController = new SaveLoadController(board, game, gameController);
-       
 	   
+	   
+	   SaveLoadGui slg = new SaveLoadGui();
+	   slg.initialWindow();
+       
+
    }
+   
+   
+   
 
 
 }

@@ -16,6 +16,11 @@ import main.Model.Player;
 
 public class HumanController implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private static final int[] outerUp = IntStream.range(91, 101).toArray();
 	private static final int[] innerUp = IntStream.range(81, 91).toArray();
 	private static final int[] outerDown = IntStream.range(1, 11).toArray();

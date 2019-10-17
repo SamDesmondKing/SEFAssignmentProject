@@ -1,18 +1,12 @@
 package main.Controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import exceptions.LadderPlacementException;
 import exceptions.SnakeGuardPlacementException;
@@ -24,18 +18,17 @@ import main.Model.Ladder;
 import main.Model.Player;
 import main.Model.Snake;
 import main.Model.SnakeGuard;
+import main.View.CheckPointGui;
 import main.View.Game;
-import main.View.GameInitiator;
-import main.View.MainMenuView;
+import main.View.SaveLoadGui;
 
-public class GameController implements ActionListener, Serializable {
+public class GameController implements Serializable {
 
 	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5L;
-	
+	private static final long serialVersionUID = 1L;
 
 	private static final int maxSnakeGuard = 3;
 
@@ -47,7 +40,7 @@ public class GameController implements ActionListener, Serializable {
 	private String admin;
 	private String humanPlayer;
 	private String snakePlayer;
-	private Player[] players = new Player[3];
+	private Player[] players = new Player[2];
 
 	private HumanPiece piece;
 	private Snake snake;
@@ -63,27 +56,38 @@ public class GameController implements ActionListener, Serializable {
 	BoardController boardController;
 	SnakeController snakeController;
 	HumanController humanController;
-	MainMenuView mainMenuView;
-	
+	SaveLoadGui saveLoadGui;
 	Dice dice;
-	Scanner scan = new Scanner(System.in);
+	
+	
+	CheckPointController cpc;
 
-	public GameController(Board board, Game game) {
-		intialise(board, game);
-		this.mainMenuView = new MainMenuView(this);
+
+	public GameController() {
 		
-	}
-	
-	
-	public void intialise(Board board, Game game) {
-		
-		this.bd = board;
-		this.game = game;
+		this.bd = new Board();
+		this.game = new Game(bd);
 		this.dice = bd.getDice();
-		boardController = new BoardController();
-		snakeController = new SnakeController();
-		humanController = new HumanController();
+		
+		this.cpc = new CheckPointController(this);
+		
+		
+		
+		
+		
+		
+		
+		
 	}
+	
+	public void initialise() {
+		
+		
+		this.game = new Game(bd);
+		
+	
+	}
+	
 
 	/*
 	 * public void setup(Board bd) throws Exception {
@@ -105,6 +109,14 @@ public class GameController implements ActionListener, Serializable {
 	 * 
 	 * }
 	 */
+
+	public Game getGame() {
+		return game;
+	}
+
+	public void setGame(Game game) {
+		this.game = game;
+	}
 
 	// A method to print a message and to read an int value in the range specified
 	int getInt(String message, int from, int to) {
@@ -159,7 +171,6 @@ public class GameController implements ActionListener, Serializable {
 			snakeTail = getInt(admin + ": Enter position for Snake " + count + "'s tail", 0, 100);
 			try {
 				boardController.add(new Snake(snakeHead, snakeTail), bd);
-				game.repaint();
 				// Gives snake to BoardController, which verifies conditions
 				// BoardController adds snake to Board.
 			} catch (SnakePlacementException e) {
@@ -174,7 +185,6 @@ public class GameController implements ActionListener, Serializable {
 			ladderBottom = getInt(admin + ": Enter position for Ladder " + count + "'s bottom", 0, 100);
 			try {
 				boardController.add(new Ladder(ladderBottom, ladderTop), bd);
-				game.repaint();
 				// Gives ladder to BoardController, which verifies conditions
 				// BoardController adds ladder to Board.
 			} catch (LadderPlacementException e) {
@@ -183,9 +193,9 @@ public class GameController implements ActionListener, Serializable {
 			}
 			count++;
 		}
-		stage1 = true;
+		
 	}
-	
+
 	public void updateParalysedPieces() {
 		int turns;
 		boolean isParalysed;
@@ -499,88 +509,96 @@ public class GameController implements ActionListener, Serializable {
 		}
 		plainMessage("The snakes have been defeated! Humans win!");
 	}
-
 	
+	private int stage;
 	
 	public void addMessages() {
+		game.clearMessages(); // clears the display board
 		game.addMessage("Current Players Are - ");
 		game.addMessage("Admin : ");
-		game.addMessage(bd.getAdminPlayer());
+		game.addMessage(admin);
 		game.addMessage("Human Player : ");
-		game.addMessage(bd.getHumanPlayer());
+		game.addMessage(humanPlayer);
 		game.addMessage("Snake Player : ");
-		game.addMessage(bd.getSnakePlayer());
+		game.addMessage(snakePlayer);
 		game.addMessage("------------------------------");
-		game.repaint();
-
 	}
 	
-	public void control() {
-
+	public void checkStage() {
 		
-		game.clearMessages(); // clears the display board
-
-		stage = 1;
-		bd.setStage(stage);
+		if (stage == 1) {
+			control();
+		}
+		if (stage == 2) {
+			control2();
+		}
+		else if (stage == 3) {
+			control3();
+		}
+	}
+	
+	public void getPlayers() {
 		
 		admin = getString("Admin name : ");
 		humanPlayer = getString("Human player name : ");
 		snakePlayer = getString("Snake Player name : ");
-		bd.setAdminPlayer(admin);
-		bd.setHumanPlayer(humanPlayer);
-		bd.setSnakePlayer(snakePlayer);
 		addMessages();
+		stage = 1;
+		control();
+		
+	}
 
+	public void control() {
 		
-		checkPoint();
+		
+		players[0] = new Player(humanPlayer, "Human");
+		players[1] = new Player(admin, "Snake");
+		boardController = new BoardController();
+		snakeController = new SnakeController();
+		humanController = new HumanController();
 		
 		
+		addMessages();
 		//Set up the board
+		initialStage();
+		stage = 2;
+		cpc.getCpg().checkPointDialog();
 		
-
+		try {
+			ResourceManager.save(this, "3. Save");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//saveLoadGui.checkPointDialog();
+		//Place all the pieces on the board
+		bd.updateBoard();
+		
+		
+		//control2();
+		
+		/*
+		
+		*/
 	}
 	
 	public void control2() {
-		game.repaint();
-		stage = 2;
-		bd.setStage(stage);
-		
 		bd.updateBoard();
-		initialStage();
-		//Place all the pieces on the board
+		stage1 = true;
+		addMessages();
 		
-		
-		checkPoint();
+		secondStage();
+		stage = 3;
+		cpc.getCpg().checkPointDialog();
 		
 		
 	}
 	
 	public void control3() {
-		game.repaint();
-		players[0] = new Player(bd.getHumanPlayer(), "Human");
-		players[1] = new Player(bd.getAdminPlayer(), "Admin");
-		players[2] = new Player(bd.getSnakePlayer(), "Snake");
-		stage = 3;
-		
-		bd.setStage(3);
-		bd.updateBoard();
-		secondStage();
-		
-		checkPoint();
-
-		
-	}
-	
-	public void control4() {
-		game.repaint();
-		players[0] = new Player(bd.getHumanPlayer(), "Human");
-		players[1] = new Player(bd.getAdminPlayer(), "Admin");
-		players[2] = new Player(bd.getSnakePlayer(), "Snake");
-		stage = 4;
-		bd.setStage(stage);
-		finalStage();
 		game.setPiece(bd.getPiece(0), 100);
 		finalStage();
+		stage = 4;
 	}
 
 	public static boolean getStage1() {
@@ -591,265 +609,171 @@ public class GameController implements ActionListener, Serializable {
 		return finalStageHumanPlayerTurn;
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		this.e = e;
-		if (e.getSource().equals(mainMenuView.getNewGameBtn())){
-			mainMenuView.getFrame().dispose();
-			control();
-		}
-		else if (e.getSource().equals(mainMenuView.getLoadGameBtn())){
-			mainMenuView.getFrame().dispose();
-			loadMenu();
-		}
-		else if (e.getSource().equals(mainMenuView.getLoginBtn())){
-			mainMenuView.getFrame().dispose();
-			loginMenu();
-		}
-		else if (e.getSource() == loadBtn) {
-			box.dispose();
-			loadMenu();
-		}
-		else if (e.getSource() == closeBtn) {
-			box.dispose();
-			checkStage();
-		}
-		else if (e.getSource() == closeExitBtn) {
-			game.getFrame().dispose();
-		}
-		else if (e.getSource() == submitBtn) {
-			box.dispose();
-			loadAction();
-		}
-		
-		System.out.println("hi");
-		if (stage > 0 && stage < 6) {
-			
-			checkPointPerformed();
-		}
-		
-	}
-	
-	public void loginMenu() {
-		
-		Login login = new Login();
-		login.runLogin(1);
-		synchronized(login) {
-		    try {
-				login.wait(10000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				}
-		}
-		login = new Login();
-		login.runLogin(2);
-		synchronized(login) {
-		   try {
-				login.wait(10000);
-		   } catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-			   e.printStackTrace();
-		   }
-	   }
-	   login.runLogin(3);
-	   synchronized(login) {
-		   try {
-				login.wait(10000);
-		   } catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-		   }
-	   }
-	   control();
-		
-	}
-	
-	
-	// CheckPoints
-	
-	// Variables
-	ActionEvent e;
-	JDialog box;
-	JPanel panel;
-	JLabel saveGameLbl, loadGameLbl;
-	JTextField saveText, loadText;
-	JButton saveBtn, loadBtn, closeBtn, closeExitBtn, submitBtn;
-	String boxID;
-	
-	private int stage;
-	
-	// LoadMenu; 
-	
-	public void loadAction() {
-		if (loadText.getText().equals("")) {
-			JOptionPane.showMessageDialog(null, "Invalid option. Please try again");
-		}
-		else {
-			try {
-				
-				bd = (Board) SaveLoadController.load(loadText.getText() + "board");
-				game = new Game(bd); 
-				
-				intialise(bd, game);
-				this.dice = bd.getDice();
-				
-				System.out.println(bd.getStage());
-				
-				
-				this.admin = bd.getAdminPlayer();
-				this.humanPlayer = bd.getHumanPlayer();
-				this.snakePlayer = bd.getSnakePlayer();
-				
-				players[0] = new Player(bd.getHumanPlayer(), "Human");
-				players[1] = new Player(bd.getAdminPlayer(), "Admin");
-				players[2] = new Player(bd.getSnakePlayer(), "Snake");
-				
-				
-				setStage(bd.getStage());
-				
-				addMessages();
-				bd.updateBoard();
-				game.repaint();
-				
-				checkStage();
-				
-			} catch (Exception e) {
-				System.out.println("Error: " + e);
-				//e.printStackTrace();
-			}
-			
-		}
-	}
-	
-	private void setStage(int stage) {
-		this.stage = stage;
-		
+	public ArrayList<Integer> getMoves() {
+		return moves;
 	}
 
-	public void loadMenu() {
-		boxID = "loadMenu";
-		box = new JDialog();
-		panel = new JPanel();
-		box.setTitle("Load a Game");
-		
-		loadGameLbl = new JLabel("Load Game: ");
-		loadText = new JTextField(10);
-		
-		submitBtn = new JButton("Submit");
-		submitBtn.addActionListener(this);
-		
-		closeBtn = new JButton("Close and continue");
-		closeBtn.addActionListener(this);
-		
-		closeExitBtn = new JButton("Close and Exit");
-		closeExitBtn.addActionListener(this);
-		
-		panel.add(loadGameLbl);
-		panel.add(loadText);
-		panel.add(submitBtn);
-		panel.add(closeBtn);
-		panel.add(closeExitBtn);
-		box.add(panel);
+	public void setMoves(ArrayList<Integer> moves) {
+		this.moves = moves;
+	}
 
-		box.setSize(300, 150);
-		box.setLocationRelativeTo(null);
-		box.setResizable(false);
-		box.setVisible(true);
-		
+	public int getSnakesCount() {
+		return snakesCount;
 	}
-	
-	
-	// Accessors
-	
-	public void checkPointPerformed() {
-	
-		if (e.getSource() == saveBtn) {
-			if (saveText.getText().isEmpty()) {
-				JOptionPane.showMessageDialog(null, "Invalid option. Please try again.");
-			}
-			else {
-				try {
-					bd.setAdminPlayer(admin);
-					bd.setHumanPlayer(humanPlayer);
-					bd.setSnakePlayer(snakePlayer);
-					bd.setStage(stage);
-					
-					SaveLoadController.save(bd, saveText.getText());
-					SaveLoadController.save(game, saveText.getText());
-					//SaveLoadController.save(this, saveText.getText());
-					
-					
-					
-					System.out.println("Save is successful");
-					box.dispose();
-					checkStage();
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					System.out.println("Couldn't save " + e1.getMessage());
-					System.out.println(e1);
-					e1.printStackTrace();
-				}
-			}
-		}
-		else if (e.getSource() == loadBtn) {
-			
-		}
-		
+
+	public void setSnakesCount(int snakesCount) {
+		this.snakesCount = snakesCount;
 	}
-	
-	public void checkStage() {
-		stage = bd.getStage();
-		
-		if (stage == 1) {
-			
-			control2();
-			
-			
-		}
-		else if (stage == 2) {
-			control3();
-		}
-		else if (stage == 3) {
-			control4();
-		}
+
+	public int getLaddersCount() {
+		return laddersCount;
 	}
-		
-	public void checkPoint() {
-		
-		box = new JDialog();
-		panel = new JPanel();
-		box.setTitle("Save a Game");
-		
-		saveGameLbl = new JLabel("Save Game: ");
-		saveText = new JTextField(10);
-		
-		saveBtn = new JButton("Save and Continue");
-		saveBtn.addActionListener(this);
-		
-		loadBtn = new JButton("Load Saved Game");
-		loadBtn.addActionListener(this);
-		
-		closeBtn = new JButton("Close and continue");
-		closeBtn.addActionListener(this);
-		
-		closeExitBtn = new JButton("Close and Exit");
-		closeExitBtn.addActionListener(this);
-		
-		panel.add(saveGameLbl);
-		panel.add(saveText);
-		panel.add(saveBtn);
-		panel.add(loadBtn);
-		panel.add(closeBtn);
-		panel.add(closeExitBtn);
-		box.add(panel);
-		
-		box.setSize(300, 200);
-		box.setLocationRelativeTo(null);
-		box.setResizable(false);
-		box.setVisible(true);
-		
-		
+
+	public void setLaddersCount(int laddersCount) {
+		this.laddersCount = laddersCount;
 	}
-	
+
+	public int getSnakeGuardCount() {
+		return snakeGuardCount;
+	}
+
+	public void setSnakeGuardCount(int snakeGuardCount) {
+		this.snakeGuardCount = snakeGuardCount;
+	}
+
+	public String getAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(String admin) {
+		this.admin = admin;
+	}
+
+	public String getHumanPlayer() {
+		return humanPlayer;
+	}
+
+	public void setHumanPlayer(String humanPlayer) {
+		this.humanPlayer = humanPlayer;
+	}
+
+	public String getSnakePlayer() {
+		return snakePlayer;
+	}
+
+	public void setSnakePlayer(String snakePlayer) {
+		this.snakePlayer = snakePlayer;
+	}
+
+	public HumanPiece getPiece() {
+		return piece;
+	}
+
+	public void setPiece(HumanPiece piece) {
+		this.piece = piece;
+	}
+
+	public Snake getSnake() {
+		return snake;
+	}
+
+	public void setSnake(Snake snake) {
+		this.snake = snake;
+	}
+
+	public int getSnakeNumber() {
+		return snakeNumber;
+	}
+
+	public void setSnakeNumber(int snakeNumber) {
+		this.snakeNumber = snakeNumber;
+	}
+
+	public int getPieceNumber() {
+		return pieceNumber;
+	}
+
+	public void setPieceNumber(int pieceNumber) {
+		this.pieceNumber = pieceNumber;
+	}
+
+	public static boolean isReached100() {
+		return reached100;
+	}
+
+	public static void setReached100(boolean reached100) {
+		GameController.reached100 = reached100;
+	}
+
+	public static boolean isFinalStageHumanPlayerTurn() {
+		return finalStageHumanPlayerTurn;
+	}
+
+	public static void setFinalStageHumanPlayerTurn(boolean finalStageHumanPlayerTurn) {
+		GameController.finalStageHumanPlayerTurn = finalStageHumanPlayerTurn;
+	}
+
+	public Board getBd() {
+		return bd;
+	}
+
+	public void setBd(Board bd) {
+		this.bd = bd;
+	}
+
+	public BoardController getBoardController() {
+		return boardController;
+	}
+
+	public void setBoardController(BoardController boardController) {
+		this.boardController = boardController;
+	}
+
+	public SnakeController getSnakeController() {
+		return snakeController;
+	}
+
+	public void setSnakeController(SnakeController snakeController) {
+		this.snakeController = snakeController;
+	}
+
+	public HumanController getHumanController() {
+		return humanController;
+	}
+
+	public void setHumanController(HumanController humanController) {
+		this.humanController = humanController;
+	}
+
+	public SaveLoadGui getSaveLoadGui() {
+		return saveLoadGui;
+	}
+
+	public void setSaveLoadGui(SaveLoadGui saveLoadGui) {
+		this.saveLoadGui = saveLoadGui;
+	}
+
+	public Dice getDice() {
+		return dice;
+	}
+
+	public void setDice(Dice dice) {
+		this.dice = dice;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public static int getMaxsnakeguard() {
+		return maxSnakeGuard;
+	}
+
+	public void setPlayers(Player[] players) {
+		this.players = players;
+	}
+
+	public static void setStage1(boolean stage1) {
+		GameController.stage1 = stage1;
+	}
 }

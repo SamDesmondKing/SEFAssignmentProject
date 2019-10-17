@@ -15,7 +15,8 @@ public class BoardController implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 1L;
+	
 	private int snakesCount;
 	private int laddersCount;
 	private int snakeGuardsCount;
@@ -33,13 +34,13 @@ public class BoardController implements Serializable {
 
 		// Check max 5 Snakes
 		if (this.snakesCount >= 5) {
-			System.out.println("z");
+			
 			throw new SnakePlacementException("Snake limit reached");
 		}
 
 		// Check top/bottom difference
 		if (thisSnake.getHead() - thisSnake.getTail() > 30) {
-			System.out.println("x");
+			
 			throw new SnakePlacementException("Snake length invalid");
 		}
 		
@@ -50,7 +51,7 @@ public class BoardController implements Serializable {
 
 		// No snake head on existing ladder head/base
 		for (Ladder i : board.getLS()) {
-			System.out.println("c");
+			
 			if (thisSnake.getHead() == i.getTop() || thisSnake.getHead() == i.getBottom()) {
 				throw new SnakePlacementException("Snake position invalid (No snake head allowed on existing ladder head/base)");
 			}
@@ -58,7 +59,7 @@ public class BoardController implements Serializable {
 
 		// No snake head on another snake head / either side of another snake head
 		for (Snake i : board.getSS()) {
-			System.out.println("v");
+			
 			if (thisSnake.getHead() == i.getHead() || thisSnake.getHead() == (i.getHead() - 1)
 					|| thisSnake.getHead() == (i.getHead() + 1)) {
 				throw new SnakePlacementException("Snake position invalid (Snakes too close together)");
@@ -67,12 +68,12 @@ public class BoardController implements Serializable {
 		
 		// Only one snake head allowed in positions 81 to 100
 		if (thisSnake.getHead() >= 81 && thisSnake.getHead() <= 100) {
-			System.out.println("b");
+			
 			if (topTwentySnake == false) {
 				this.topTwentySnake = true;
 			}
 			else {
-				System.out.println("n");
+				
 				throw new SnakePlacementException("Snake position invalid (Only one snake allowed above location 79.)");
 			}
 		} 

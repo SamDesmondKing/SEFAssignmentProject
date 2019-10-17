@@ -2,14 +2,13 @@ package main.View;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.awt.BorderLayout;
 
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.io.Serializable;
+
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -24,12 +23,7 @@ import main.Model.Snake;
 import main.Model.SnakeGuard;
 
 
-public class Game extends JPanel implements Runnable, Serializable{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6L;
+public class Game extends JPanel implements Runnable{
 	
 	private static JFrame frame = new JFrame("Snakes and Ladders Reinvented");
 	private double factor = 0.2;
@@ -56,7 +50,7 @@ public class Game extends JPanel implements Runnable, Serializable{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(640,520);
 		frame.setVisible(true);
-		
+		new Thread(this).start();
 		
 		this.bd = new HashMap<Entity,Integer>();
 		dice = new Dice(this);
@@ -401,10 +395,5 @@ public class Game extends JPanel implements Runnable, Serializable{
 			drawPieces(g);
 		dice.draw(g);
   }
-
-public JFrame getFrame() {
-	// TODO Auto-generated method stub
-	return frame;
-}
 
 }
