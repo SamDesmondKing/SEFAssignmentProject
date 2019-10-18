@@ -14,7 +14,7 @@ public class HumanControllerTests {
 
 	@Test 
 	public void test1() {
-		
+
 		//initialize piece at a certain location, generate possible move set (final stage)
 		HumanPiece piece = new HumanPiece("1",56);
 		HumanController humanController= new HumanController();
@@ -44,7 +44,16 @@ public class HumanControllerTests {
 		int move = 99;
 		
 		humanController.moveVerifier(move, moves);
-			
+
+		move = 66;
+		try {
+			humanController.moveVerifier(move, moves);
+			System.out.println("Test passed!");
+		}
+		catch (HumanPiecePlacementException e) {
+			System.out.println(e);
+		}
+		
 	}
 
 }

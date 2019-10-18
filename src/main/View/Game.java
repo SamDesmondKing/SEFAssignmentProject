@@ -285,6 +285,7 @@ public class Game extends JPanel implements Runnable{
    public void paintComponent(Graphics g) {
 		
 		this.bd = board.getBoard();
+
 		/*
 		this.ss = board.getSS();
 		this.ls = board.getLS();

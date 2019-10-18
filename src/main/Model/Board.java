@@ -1,9 +1,11 @@
 package main.Model;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.io.Serializable;
 
-
-public class Board {
+public class Board implements Serializable  {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private HumanPiece[] pieces = new HumanPiece[4];
 	private ArrayList<Snake> ss;
@@ -105,6 +107,10 @@ public class Board {
 		return this.pieces;
 	}
    
+	public HumanPiece getPiece(int index) {
+		return this.pieces[index];
+	}
+	
 	public void setPiece(HumanPiece piece, int pos) {
 		piece.setLocation(pos);
 		updateBoard(piece);
@@ -141,5 +147,6 @@ public class Board {
 	public void removePiece(int index) {
 		this.pieces[index] = null;
 		removeEntity(pieces[index]);
+
 	}
 }

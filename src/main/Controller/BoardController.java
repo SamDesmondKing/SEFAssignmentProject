@@ -1,5 +1,6 @@
 package main.Controller;
 
+
 import exceptions.LadderPlacementException;
 import exceptions.SnakeGuardPlacementException;
 import exceptions.SnakePlacementException;
@@ -8,23 +9,28 @@ import main.Model.Ladder;
 import main.Model.Snake;
 import main.Model.SnakeGuard;
 
-public class BoardController {
 
+import java.io.Serializable;
+
+import exceptions.LadderPlacementException;
+import exceptions.SnakeGuardPlacementException;
+import exceptions.SnakePlacementException;
+import main.Model.Board;
+import main.Model.Ladder;
+import main.Model.Snake;
+import main.Model.SnakeGuard;
+
+public class BoardController implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private int snakesCount;
 	private int laddersCount;
 	private int snakeGuardsCount;
 	private boolean topTwentySnake;
-
-// - Should be allowed to lay 5 snakes and 5 ladders. DONE 
-// - Difference between snake head/tail or ladder top/base cannot be more than 30 DONE
-// - Ladder top/base cannot be placed on a snake head DONE
-// - Ladder base cannot be placed on another ladder's head DONE
-// - No ladder base at location 1 and no ladder top at location 100 DONE
-// - Snake head cannot be placed on top of an existing ladder head/base DONE
-// - Snake head cannot be placed +-1 either side of another snake head DONE
-// - Only one snake in locations 81 to 100 at any one time DONE
-// - Snake head cannot be on or behind tail, and vice versa for ladder DONE
-// - Snakes and ladders cannot be horizontal DONE
 	
 
 	// Constructor
@@ -38,13 +44,13 @@ public class BoardController {
 
 		// Check max 5 Snakes
 		if (this.snakesCount >= 5) {
-			System.out.println("z");
+			
 			throw new SnakePlacementException("Snake limit reached");
 		}
 
 		// Check top/bottom difference
 		if (thisSnake.getHead() - thisSnake.getTail() > 30) {
-			System.out.println("x");
+			
 			throw new SnakePlacementException("Snake length invalid");
 		}
 		
@@ -55,7 +61,7 @@ public class BoardController {
 
 		// No snake head on existing ladder head/base
 		for (Ladder i : board.getLS()) {
-			System.out.println("c");
+			
 			if (thisSnake.getHead() == i.getTop() || thisSnake.getHead() == i.getBottom()) {
 				throw new SnakePlacementException("Snake position invalid (No snake head allowed on existing ladder head/base)");
 			}
@@ -63,7 +69,7 @@ public class BoardController {
 
 		// No snake head on another snake head / either side of another snake head
 		for (Snake i : board.getSS()) {
-			System.out.println("v");
+			
 			if (thisSnake.getHead() == i.getHead() || thisSnake.getHead() == (i.getHead() - 1)
 					|| thisSnake.getHead() == (i.getHead() + 1)) {
 				throw new SnakePlacementException("Snake position invalid (Snakes too close together)");
@@ -72,12 +78,11 @@ public class BoardController {
 		
 		// Only one snake head allowed in positions 81 to 100
 		if (thisSnake.getHead() >= 81 && thisSnake.getHead() <= 100) {
-			System.out.println("b");
+			
 			if (topTwentySnake == false) {
 				this.topTwentySnake = true;
 			}
 			else {
-				System.out.println("n");
 				throw new SnakePlacementException("Snake position invalid (Only one snake allowed above location 79.)");
 			}
 		} 

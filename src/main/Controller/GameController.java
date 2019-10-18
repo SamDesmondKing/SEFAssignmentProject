@@ -19,23 +19,35 @@ import main.Model.Snake;
 import main.Model.SnakeGuard;
 import main.View.Game;
 
-public class GameController {
+
+import java.io.Serializable;
+import main.View.CheckPointGui;
+import main.View.SaveLoadGui;
+
+public class GameController implements Serializable {
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private static final int maxSnakeGuard = 3;
-	
+
 	ArrayList<Snake> snakes = new ArrayList<Snake>();    	
 	ArrayList<Ladder> ladders = new ArrayList<Ladder>();  	
 	ArrayList<SnakeGuard> traps = new ArrayList<SnakeGuard>();
 	ArrayList<Integer> moves = new ArrayList<Integer>();
-	
-	int snakesCount = 0;				 
-	int laddersCount = 0;	
+
+	int snakesCount = 0;
+	int laddersCount = 0;
 	int snakeGuardCount = 0;
 	private String admin;
 	private String humanPlayer;
 	private String snakePlayer;
 	private Player[] players = new Player[2];
 	private HumanPiece[] pieces = new HumanPiece[4];
+
 	private HumanPiece piece;
 	private Snake snake;
 	private int snakeNumber;
@@ -43,140 +55,144 @@ public class GameController {
 	static boolean stage1 = false;
 	static boolean reached100 = false;
 	static boolean finalStageHumanPlayerTurn = false;
-	   
-	   
+
 	// Creating a Board, dice and a Scanner objects
 	Board bd;
 	Game game;
 	BoardController boardController;
 	SnakeController snakeController;
 	HumanController humanController;
+	SaveLoadGui saveLoadGui;
 	Dice dice;
-	Scanner scan = new Scanner(System.in);
 	
-	public GameController(Board board,Game game) {
-		this.bd = board;
-		this.game = game;
+	
+	CheckPointController cpc;
+
+
+	public GameController() {
+		
+		this.bd = new Board();
+		this.game = new Game(bd);
 		this.dice = game.getDice();
-	}	    
-	
-	
-	public void setup() throws Exception {
 		
-		boardController = new BoardController();
-		boardController.add(new Snake(25,8), bd);
-		boardController.add(new Snake(38,20), bd);	  
-		boardController.add(new Snake(49,31), bd);  
-		boardController.add(new Snake(60,32), bd); 
-		boardController.add(new Snake(97,74), bd); 
-		snakesCount = 5;
-
-		boardController.add(new Ladder(12,34), bd);
-		boardController.add(new Ladder(37,63), bd);
-		boardController.add(new Ladder(53,67), bd);
-		boardController.add(new Ladder(70,89), bd);
-		boardController.add(new Ladder(77,98), bd);
-		laddersCount = 5;
+		this.cpc = new CheckPointController(this);
 		
-		stage1 = true;
 	}
-	     
-	   // A method to print a message and to read an int value in the range specified
-	   int getInt(String message, int from, int to)
-	   {
-		   String s;
-		   int n = 0;
-		   boolean invalid;
-		   do {
-			 invalid = false;
-		     s = (String)JOptionPane.showInputDialog(
-		      null,  message,  "Customized Dialog",
-		          JOptionPane.PLAIN_MESSAGE);	
-		      try {
-		         n = Integer.parseInt(s);
-		         if (n < from || n > to )
-		    	     plainMessage("Re-enter: Input not in range " + from + " to " + to);
-		      }
-		      catch (NumberFormatException nfe)
-		      {
-		    	  plainMessage("Re-enter: Invalid number");
-		    	  invalid = true;
-		      }
-		   } while ( invalid || n < from || n > to);
-		   return n;
-	   } 
-	   
-	   // A method to print a message and to read a String
-	   String getString(String message)
-	   {
-		   
-		   String s;
-		   
-		   do {
-			   
-			   s = (String)JOptionPane.showInputDialog(
-					      null,  message,  "Enter Player Name",
-					          JOptionPane.PLAIN_MESSAGE);
-		   } while(s.trim().equals(""));
-		   
-		   /*
-		   JOptionPane optionPane = new JOptionPane("Its me"
-                   , JOptionPane.PLAIN_MESSAGE
-                   , JOptionPane.DEFAULT_OPTION
-                   , null, null, "Please ENTER your NAME here");
-			optionPane.setWantsInput(true);             
-			JDialog dialog = optionPane.createDialog(null, "Enter Player Name");
-			dialog.setLocation(150, 475);
-			dialog.setVisible(true);
-			s = (String) optionPane.getInputValue();
-			*/ 
-		   return s;
-	   }   
+	
+	public void initialise() {
+		this.game = new Game(bd);
+		
+	}
+	
 
-	   // A method to print a message
-	   void plainMessage(String message)
-	   {
-	        JOptionPane.showMessageDialog(null,
-			    message, "A prompt message",
-			    JOptionPane.PLAIN_MESSAGE);
-	   }
-	   
-	   public void initialStage() {
-		   int count = 1,snakeHead,snakeTail,ladderTop,ladderBottom;
-		   
-		   while (count < 6) {
-			   snakeHead = getInt(admin + ": Enter position for Snake " + count + "'s head",0,100);
-			   snakeTail = getInt(admin + ": Enter position for Snake " + count + "'s tail",0,100);
-			   try {
-				   boardController.add(new Snake(snakeHead,snakeTail), bd);
-				   //Gives snake to BoardController, which verifies conditions
-				   //BoardController adds snake to Board. 
-			   }
-			   catch(SnakePlacementException e) {
-				   plainMessage(e.getMessage());
-				   continue;
-			   }
-			   count++;
-		   }
-		   count = 1;
-		   while (count < 6) {
-			   ladderTop = getInt(admin + ": Enter position for Ladder " + count + "'s top",0,100);
-			   ladderBottom = getInt(admin + ": Enter position for Ladder " + count + "'s bottom",0,100);
-			   try {
-				   boardController.add(new Ladder(ladderBottom,ladderTop), bd);
-				   //Gives ladder to BoardController, which verifies conditions
-				   //BoardController adds ladder to Board.
-			   }
-			   catch(LadderPlacementException e) {
-				   plainMessage(e.getMessage());
-				   continue;
-			   }
-			   count++;
-		   }
-		   stage1 = true;
-	   }
-	   
-	   public void updateGame() {
+	/*
+	 * public void setup(Board bd) throws Exception {
+	 * 
+	 * 
+	 * boardController = new BoardController(); //int choice = 0;
+	 * //boardController.add(new Trap(25,3)); //boardController.add(new Trap(95,3));
+	 * 
+	 * 
+	 * boardController.add(new Snake(92,34), bd); boardController.add(new
+	 * Snake(62,12), bd); boardController.add(new Snake(41,3), bd);
+	 * boardController.add(new Snake(99,10), bd);
+	 * 
+	 * snakesCount = 3;
+	 * 
+	 * boardController.add(new Ladder(7,49), bd); boardController.add(new
+	 * Ladder(55,90), bd); boardController.add(new Ladder(38,86), bd); laddersCount
+	 * = 3;
+	 * 
+	 * }
+	 */
+
+	public Game getGame() {
+		return game;
+	}
+
+	public void setGame(Game game) {
+		this.game = game;
+	}
+
+	// A method to print a message and to read an int value in the range specified
+	int getInt(String message, int from, int to) {
+		String s;
+		int n = 0;
+		boolean invalid;
+		do {
+			invalid = false;
+			s = (String) JOptionPane.showInputDialog(null, message, "Customized Dialog", JOptionPane.PLAIN_MESSAGE);
+			try {
+				n = Integer.parseInt(s);
+				if (n < from || n > to)
+					plainMessage("Re-enter: Input not in range " + from + " to " + to);
+			} catch (NumberFormatException nfe) {
+				plainMessage("Re-enter: Invalid number");
+				invalid = true;
+			}
+		} while (invalid || n < from || n > to);
+		return n;
+	}
+
+	// A method to print a message and to read a String
+	String getString(String message) {
+
+		String s;
+
+		do {
+
+			s = (String) JOptionPane.showInputDialog(null, message, "Enter Player Name", JOptionPane.PLAIN_MESSAGE);
+		} while (s.trim().equals(""));
+
+		/*
+		 * JOptionPane optionPane = new JOptionPane("Its me" , JOptionPane.PLAIN_MESSAGE
+		 * , JOptionPane.DEFAULT_OPTION , null, null, "Please ENTER your NAME here");
+		 * optionPane.setWantsInput(true); JDialog dialog =
+		 * optionPane.createDialog(null, "Enter Player Name"); dialog.setLocation(150,
+		 * 475); dialog.setVisible(true); s = (String) optionPane.getInputValue();
+		 */
+		return s;
+	}
+
+	// A method to print a message
+	void plainMessage(String message) {
+		JOptionPane.showMessageDialog(null, message, "A prompt message", JOptionPane.PLAIN_MESSAGE);
+	}
+
+	public void initialStage() {
+		int count = 1, snakeHead, snakeTail, ladderTop, ladderBottom;
+
+		while (count < 6) {
+			snakeHead = getInt(admin + ": Enter position for Snake " + count + "'s head", 0, 100);
+			snakeTail = getInt(admin + ": Enter position for Snake " + count + "'s tail", 0, 100);
+			try {
+				boardController.add(new Snake(snakeHead, snakeTail), bd);
+				// Gives snake to BoardController, which verifies conditions
+				// BoardController adds snake to Board.
+			} catch (SnakePlacementException e) {
+				plainMessage(e.getMessage());
+				continue;
+			}
+			count++;
+		}
+		count = 1;
+		while (count < 6) {
+			ladderTop = getInt(admin + ": Enter position for Ladder " + count + "'s top", 0, 100);
+			ladderBottom = getInt(admin + ": Enter position for Ladder " + count + "'s bottom", 0, 100);
+			try {
+				boardController.add(new Ladder(ladderBottom, ladderTop), bd);
+				// Gives ladder to BoardController, which verifies conditions
+				// BoardController adds ladder to Board.
+			} catch (LadderPlacementException e) {
+				plainMessage(e.getMessage());
+				continue;
+			}
+			count++;
+		}
+		
+	}
+	
+	public void updateGame() {
 		   this.pieces = bd.getPieces();
 		   this.snakes = bd.getSS();
 		   this.ladders = bd.getLS();
@@ -456,58 +472,269 @@ public class GameController {
 		   plainMessage("The snakes have been defeated! Humans win!");
 	   }
 	   
-	   // The main method implementing the game logic for Part A
-	   // For Part A you may use the hard coded values in the setup() method 
-	   // You will need to change the code for Part B
-	   // For user interaction use the methods getString, getInt and plainMessage
-	   // For display/erase on the board use bd.addMessage(), bd.clearMessages()
-
-	public void control() { 
-		
-		boardController = new BoardController();
-		snakeController = new SnakeController();
-		humanController = new HumanController();
-		game.clearMessages();  // clears the display board  
-		
-		admin = getString("Admin name : ");
-		humanPlayer = getString("Human player name : ");
-		snakePlayer = getString("Snake Player name : ");
-		players[0] = new Player(humanPlayer,"Human");
-		players[1] = new Player(admin,"Snake");
-		
+	
+	private int stage;
+	
+	public void addMessages() {
+		game.clearMessages(); // clears the display board
 		game.addMessage("Current Players Are - ");
-		game.addMessage("Admin : "); 
+		game.addMessage("Admin : ");
 		game.addMessage(admin);
 		game.addMessage("Human Player : ");
 		game.addMessage(humanPlayer);
 		game.addMessage("Snake Player : ");
 		game.addMessage(snakePlayer);
 		game.addMessage("------------------------------");
-		/*
-		initialStage();
+	}
+	
+	public void checkStage() {
 		
-		if (secondStage()) {
-			finalStage();
+		if (stage == 1) {
+			control();
 		}
-		*/
+		if (stage == 2) {
+			control2();
+		}
+		else if (stage == 3) {
+			control3();
+		}
+	}
+	
+	public void getPlayers() {
+		
+		admin = getString("Admin name : ");
+		humanPlayer = getString("Human player name : ");
+		snakePlayer = getString("Snake Player name : ");
+		addMessages();
+		stage = 1;
+		control();
+		
+	}
+
+	public void control() {
+		
+		
+		players[0] = new Player(humanPlayer, "Human");
+		players[1] = new Player(admin, "Snake");
+		boardController = new BoardController();
+		snakeController = new SnakeController();
+		humanController = new HumanController();
+		
+		
+		addMessages();
+		//Set up the board
+		initialStage();
+		stage = 2;
+		cpc.getCpg().checkPointDialog();
 		
 		try {
-			setup();
+			ResourceManager.save(this, "3. Save");
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		updateGame();
-		game.setPiece(pieces[0],100);
-		pieces[0].activate();
-		finalStage();
+		
+		//saveLoadGui.checkPointDialog();
+		//Place all the pieces on the board
 		
 		
-	   }
+		//control2();
+		
+		/*
+		
+		*/
+	}
 	
+	public void control2() {
+		stage1 = true;
+		addMessages();
+		
+		secondStage();
+		stage = 3;
+		cpc.getCpg().checkPointDialog();
+		
+		
+	}
+	
+	public void control3() {
+		game.setPiece(bd.getPiece(0), 100);
+		finalStage();
+		stage = 4;
+	}
+
 	public static boolean getStage1() {
 		return stage1;
 	}
+
 	public static boolean getfinalStageHumanPlayerTurn() {
 		return finalStageHumanPlayerTurn;
+	}
+
+	public ArrayList<Integer> getMoves() {
+		return moves;
+	}
+
+	public void setMoves(ArrayList<Integer> moves) {
+		this.moves = moves;
+	}
+
+	public int getSnakesCount() {
+		return snakesCount;
+	}
+
+	public void setSnakesCount(int snakesCount) {
+		this.snakesCount = snakesCount;
+	}
+
+	public int getLaddersCount() {
+		return laddersCount;
+	}
+
+	public void setLaddersCount(int laddersCount) {
+		this.laddersCount = laddersCount;
+	}
+
+	public int getSnakeGuardCount() {
+		return snakeGuardCount;
+	}
+
+	public void setSnakeGuardCount(int snakeGuardCount) {
+		this.snakeGuardCount = snakeGuardCount;
+	}
+
+	public String getAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(String admin) {
+		this.admin = admin;
+	}
+
+	public String getHumanPlayer() {
+		return humanPlayer;
+	}
+
+	public void setHumanPlayer(String humanPlayer) {
+		this.humanPlayer = humanPlayer;
+	}
+
+	public String getSnakePlayer() {
+		return snakePlayer;
+	}
+
+	public void setSnakePlayer(String snakePlayer) {
+		this.snakePlayer = snakePlayer;
+	}
+
+	public HumanPiece getPiece() {
+		return piece;
+	}
+
+	public void setPiece(HumanPiece piece) {
+		this.piece = piece;
+	}
+
+	public Snake getSnake() {
+		return snake;
+	}
+
+	public void setSnake(Snake snake) {
+		this.snake = snake;
+	}
+
+	public int getSnakeNumber() {
+		return snakeNumber;
+	}
+
+	public void setSnakeNumber(int snakeNumber) {
+		this.snakeNumber = snakeNumber;
+	}
+
+	public int getPieceNumber() {
+		return pieceNumber;
+	}
+
+	public void setPieceNumber(int pieceNumber) {
+		this.pieceNumber = pieceNumber;
+	}
+
+	public static boolean isReached100() {
+		return reached100;
+	}
+
+	public static void setReached100(boolean reached100) {
+		GameController.reached100 = reached100;
+	}
+
+	public static boolean isFinalStageHumanPlayerTurn() {
+		return finalStageHumanPlayerTurn;
+	}
+
+	public static void setFinalStageHumanPlayerTurn(boolean finalStageHumanPlayerTurn) {
+		GameController.finalStageHumanPlayerTurn = finalStageHumanPlayerTurn;
+	}
+
+	public Board getBd() {
+		return bd;
+	}
+
+	public void setBd(Board bd) {
+		this.bd = bd;
+	}
+
+	public BoardController getBoardController() {
+		return boardController;
+	}
+
+	public void setBoardController(BoardController boardController) {
+		this.boardController = boardController;
+	}
+
+	public SnakeController getSnakeController() {
+		return snakeController;
+	}
+
+	public void setSnakeController(SnakeController snakeController) {
+		this.snakeController = snakeController;
+	}
+
+	public HumanController getHumanController() {
+		return humanController;
+	}
+
+	public void setHumanController(HumanController humanController) {
+		this.humanController = humanController;
+	}
+
+	public SaveLoadGui getSaveLoadGui() {
+		return saveLoadGui;
+	}
+
+	public void setSaveLoadGui(SaveLoadGui saveLoadGui) {
+		this.saveLoadGui = saveLoadGui;
+	}
+
+	public Dice getDice() {
+		return dice;
+	}
+
+	public void setDice(Dice dice) {
+		this.dice = dice;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public static int getMaxsnakeguard() {
+		return maxSnakeGuard;
+	}
+
+	public void setPlayers(Player[] players) {
+		this.players = players;
+	}
+
+	public static void setStage1(boolean stage1) {
+		GameController.stage1 = stage1;
 	}
 }

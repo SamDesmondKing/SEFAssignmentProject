@@ -15,8 +15,11 @@ import main.Model.Ladder;
 import main.Model.Player;
 import main.Model.Snake;
 import main.View.Game;
+import java.io.Serializable;
 
-public class HumanController {
+public class HumanController implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	
 	private static final int[] outerUp = IntStream.range(91, 101).toArray();
 	private static final int[] innerUp = IntStream.range(81, 91).toArray();
@@ -157,8 +160,8 @@ public class HumanController {
 				}
 			}
 		}
+
 		else if (Arrays.stream(innerDown).anyMatch(x -> x == location)) {
-			System.out.println("h");
 			for (String movesString: moves.keySet()) {
 				if (movesString.contains("D2")) {
 					moves.put(movesString,false);
