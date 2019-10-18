@@ -6,6 +6,7 @@ import main.Model.Board;
 import main.Model.Entity;
 import main.Model.Player;
 import main.Model.Snake;
+import main.View.Game;
 
 public class SnakeController {
 	
@@ -108,6 +109,18 @@ public class SnakeController {
 			return location - 1;
 		}
 	}
+	
+	public void snakeInfo(Board board,Game game) {
+		   if (!GameController.getStage1()) {
+			   return;
+		   }
+		   int count = 1;
+		   for (Snake snake: board.getSS()) {
+			   game.addMessage("Snake " + count + "'s Head: "
+					   					+ snake.getHead());
+			   count++;
+		   }
+		}
 	
 }
 

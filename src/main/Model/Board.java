@@ -6,7 +6,6 @@ import java.util.HashMap;
 public class Board {
 	
 	private HumanPiece[] pieces = new HumanPiece[4];
-	private Dice dice;
 	private ArrayList<Snake> ss;
 	private ArrayList<Ladder> ls;
 	private ArrayList<SnakeGuard> snakeGuards;
@@ -17,14 +16,15 @@ public class Board {
 
 	
 	public Board() {
-		
+		board = new HashMap<Entity,Integer>();
 		for (int i = 0; i < 4; i++) {
 			pieces[i] = new HumanPiece("Piece " + (i+1),1);
+			updateBoard(pieces[i]);
 		}
 		ss = new ArrayList<Snake>();
 		ls = new ArrayList<Ladder>();
 		snakeGuards = new ArrayList<SnakeGuard>();
-		board = new HashMap<Entity,Integer>();
+		
 		
 	}
 
@@ -34,17 +34,17 @@ public class Board {
 		}
 	}
 	
+	public void removeEntity(Entity entity) {
+		if (board.containsKey(entity)) {
+			board.remove(entity);
+		}
+	}
+	
 	public HashMap<Entity,Integer> getBoard() {
 		return this.board;
 	}
 	
-	public Dice getDice() {
-		return dice;
-	}
-   
-	public void setDice(Dice dice) {
-		this.dice = dice;
-	}
+	
 	
 	public ArrayList<Snake> getSS() {
 		return this.ss;
@@ -111,26 +111,35 @@ public class Board {
 	}
 	
 	public void clearLadders() {
+		for (Ladder ladder: ls) {
+			removeEntity(ladder);
+		} 
 		this.ls.clear();
 		this.laddersCount = 0;
 	}
 	
 	public void clearSnakeGuards() {
+		for (SnakeGuard snakeGuard: snakeGuards) {
+			removeEntity(snakeGuard);
+		} 
 		this.snakeGuards.clear();
 		this.snakeGuardCount = 0;
 	}
 	
 	public void removeLadder(Ladder ladder) {
 		this.ls.remove(ladder);
+		removeEntity(ladder);
 		this.laddersCount--;
 	}
 	
 	public void removeSnake(Snake snake) {
 		this.ss.remove(snake);
+		removeEntity(snake);
 		this.snakesCount--;
 	}
 	
 	public void removePiece(int index) {
 		this.pieces[index] = null;
+		removeEntity(pieces[index]);
 	}
 }

@@ -57,33 +57,29 @@ public class GameController {
 	public GameController(Board board,Game game) {
 		this.bd = board;
 		this.game = game;
-		this.dice = bd.getDice();
+		this.dice = game.getDice();
 	}	    
 	
-	/*
-	public void setup(Board bd) throws Exception {
-		
+	
+	public void setup() throws Exception {
 		
 		boardController = new BoardController();
-		//int choice = 0;
-		//boardController.add(new Trap(25,3));
-		//boardController.add(new Trap(95,3));
-		
-	
-		boardController.add(new Snake(92,34), bd);
-		boardController.add(new Snake(62,12), bd);	  
-		boardController.add(new Snake(41,3), bd);  
-		boardController.add(new Snake(99,10), bd);  
-	  
-		snakesCount = 3;
+		boardController.add(new Snake(25,8), bd);
+		boardController.add(new Snake(38,20), bd);	  
+		boardController.add(new Snake(49,31), bd);  
+		boardController.add(new Snake(60,32), bd); 
+		boardController.add(new Snake(97,74), bd); 
+		snakesCount = 5;
 
-		boardController.add(new Ladder(7,49), bd);
-		boardController.add(new Ladder(55,90), bd);
-		boardController.add(new Ladder(38,86), bd);
-		laddersCount = 3;
-			  
+		boardController.add(new Ladder(12,34), bd);
+		boardController.add(new Ladder(37,63), bd);
+		boardController.add(new Ladder(53,67), bd);
+		boardController.add(new Ladder(70,89), bd);
+		boardController.add(new Ladder(77,98), bd);
+		laddersCount = 5;
+		
+		stage1 = true;
 	}
-	*/	   
 	     
 	   // A method to print a message and to read an int value in the range specified
 	   int getInt(String message, int from, int to)
@@ -180,45 +176,6 @@ public class GameController {
 		   stage1 = true;
 	   }
 	   
-	   public void updateParalysedPieces() {
-		   int turns;
-		   boolean isParalysed;
-		   for (HumanPiece piece: pieces) {
-			   isParalysed = piece.getParalyse();
-			   turns = piece.getParalysedTurns();
-			   if (isParalysed) {
-				   if (turns + 1 == 3) {
-					   piece.setParalyse(false);
-					   piece.setParalysedTurns(0);
-				   }
-				   else {
-					   piece.setParalysedTurns(turns + 1);
-				   }
-			   }
-		   }
-	   }
-	   
-	   public boolean checkAllPieceParalysed() {
-		   for (HumanPiece piece: pieces) {
-			   if (!piece.getParalyse()) {
-				   return false;
-			   }
-		   }
-		   return true;
-	   }
-	   
-	   public void snakeInfo() {
-		   if (!stage1) {
-			   return;
-		   }
-		   int count = 1;
-		   for (Snake snake: snakes) {
-			   game.addMessage("Snake " + count + "'s Head: "
-					   					+ snake.getHead());
-			   count++;
-		   }
-	   }
-	   
 	   public void updateGame() {
 		   this.pieces = bd.getPieces();
 		   this.snakes = bd.getSS();
@@ -228,12 +185,21 @@ public class GameController {
 		   this.snakeGuardCount = bd.getSnakeGuardCount();
 	   }
 	   
+	   public boolean threeDistinctLadderCheck(HumanPiece piece) {
+		   if (piece.getLaddersClimbed().size() >= 3) {
+			   piece.activate();
+			   game.setPiece(piece,piece.getLocation());
+			   
+			   return true;
+		   }
+		   return false;
+	   }
+	   
 	   public void secondStageHumanPlayerTurn() {
 		   int val, location, snakeGuard;
 		   
-		   if (checkAllPieceParalysed() && snakeGuardCount == maxSnakeGuard) {
-			   updateParalysedPieces();
-			   plainMessage("All pieces paralysed and no snake gaurds left. Humans' turn skipped.");
+		   if (humanController.checkAllPieceParalysed(bd) && snakeGuardCount == maxSnakeGuard) {
+			   plainMessage("All pieces paralysed and no snake guards left. Humans' turn skipped.");
 			   return;
 		   }
 		   while (true) {
@@ -272,47 +238,20 @@ public class GameController {
 		    	  dice.set(val);
 		   location += val;
 		   if (location > 100) {
-			   updateParalysedPieces();
-			   plainMessage("Cannot move there!");
+			   plainMessage("Cannot move there, outside the scope of the board!");
 			   return;
 		   }
 		   if (location == 100) {
-			   if (piece.getLaddersClimbed().size() >= 3) {
+			   if (threeDistinctLadderCheck(piece)) {
 				   reached100 = true;
-				   piece.activate();
-				   game.setPiece(piece,location);
-				   updateParalysedPieces();
 				   return;
 			   }
-			   updateParalysedPieces();
 			   plainMessage("This piece can't land on 100 as it did not climb 3 distinct ladders");
 			   return;
 		   }
 		   game.setPiece(piece,location);
-		   loop:
-		   for (Snake snake: snakes) {
-			   if (snake.getHead() == location) {
-				   location = snake.getTail();
-				   game.setPiece(piece,location);
-				   piece.setParalyse(true);
-				   piece.setParalysedTurns(0);
-				   break loop;
-			   }
-		   }
-		   newloop:
-		   for (Ladder ladder: ladders) {
-			   System.out.println(ladder.getBottom());
-			   if (ladder.getBottom() == location) {
-				   if (!piece.getLaddersClimbed().contains(ladder)) {
-					   piece.setLaddersClimbed(ladder);
-					   location = ladder.getTop();
-					   game.setPiece(piece,location);
-					   return;
-				   }
-				   break newloop;
-			   }
-		   }
-		   updateParalysedPieces();
+		   humanController.secondStageMove(piece, bd, game);
+		   
 	   }
 	   
 	   public void secondStageSnakePlayerTurn() {
@@ -337,14 +276,10 @@ public class GameController {
 				   continue;
 			   }
 			   break;
-			   
 		   }
 		   for (HumanPiece piece: pieces) {
 			   if (snake.getHead() == piece.getLocation()) {
-				   piece.setLocation(snake.getTail());
-				   game.setPiece(piece,piece.getLocation());
-				   piece.setParalyse(true);
-				   piece.setParalysedTurns(0);
+				   humanController.secondStageMove(piece, bd, game);
 			   }
 		   }
 	   }
@@ -358,12 +293,13 @@ public class GameController {
 				   updateGame();
 				   if (player.getType().equals("HUMANCONTROLLER")) {
 					   secondStageHumanPlayerTurn();
+					   humanController.updateParalysedPieces(bd);
 				   }
 				   else {
 					   if (reached100 != false) {
 						   break;
 					   }
-					   snakeInfo();
+					   snakeController.snakeInfo(bd,game);
 					   secondStageSnakePlayerTurn();
 					   game.clearMessages(5);
 				   }
@@ -429,7 +365,6 @@ public class GameController {
 			   }
 		   }
 		   game.clearMoves();
-		   
 	   }
 	   
 	   public void finalStageSnakePlayerTurn() {
@@ -443,7 +378,7 @@ public class GameController {
 			   try {
 				   target = snakeController.getTarget(snake, direction);
 			   }
-			   catch (Exception e) {
+			   catch (SnakePlacementException e) {
 				   plainMessage(e.getMessage());
 				   continue;
 			   }
@@ -503,7 +438,7 @@ public class GameController {
 					   updateGame();
 					   game.addMessage(snakePlayer + "'s turn (Snakes)");
 					   game.addMessage("------------------------------");
-					   snakeInfo();
+					   snakeController.snakeInfo(bd,game);
 					   finalStageSnakePlayerTurn();
 					   game.clearMessages(snakes.size() + 2);
 				   }
@@ -548,15 +483,22 @@ public class GameController {
 		game.addMessage("Snake Player : ");
 		game.addMessage(snakePlayer);
 		game.addMessage("------------------------------");
-		
+		/*
 		initialStage();
 		
 		if (secondStage()) {
 			finalStage();
 		}
+		*/
 		
+		try {
+			setup();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		updateGame();
 		game.setPiece(pieces[0],100);
+		pieces[0].activate();
 		finalStage();
 		
 		
