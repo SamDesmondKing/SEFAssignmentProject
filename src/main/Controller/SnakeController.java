@@ -1,13 +1,17 @@
 package main.Controller;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import exceptions.SnakePlacementException;
 import main.Model.Board;
 import main.Model.Entity;
 import main.Model.Player;
 import main.Model.Snake;
+import main.View.Game;
 
-public class SnakeController {
+public class SnakeController implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private static final int[] left = {1,20,21,40,41,60,61,80,81,100};
 	private static final int[] right = {10,11,30,31,50,51,70,71,90,91};
@@ -108,6 +112,18 @@ public class SnakeController {
 			return location - 1;
 		}
 	}
+	
+	public void snakeInfo(Board board,Game game) {
+		   if (!GameController.getStage1()) {
+			   return;
+		   }
+		   int count = 1;
+		   for (Snake snake: board.getSS()) {
+			   game.addMessage("Snake " + count + "'s Head: "
+					   					+ snake.getHead());
+			   count++;
+		   }
+		}
 	
 }
 

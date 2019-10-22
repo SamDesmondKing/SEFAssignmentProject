@@ -1,11 +1,18 @@
 package main.Model;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 
 import main.View.Game;
-public class Dice
+public class Dice implements Serializable
 {
-   int n = -1;
+   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	
+int n = -1;
    Game game;
    
    public void draw(Graphics g)
@@ -66,7 +73,7 @@ public class Dice
          n = (int) (Math.random()*6) + 1;
          set(n);
          try {
-           Thread.sleep(100);
+          // Thread.sleep(100);
          }
          catch(Exception e) {}
       }

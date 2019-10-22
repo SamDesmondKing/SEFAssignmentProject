@@ -36,7 +36,7 @@ public class BoardTests {
 	public void test2() {
 		Board board = new Board();
 		Game g = new Game(board);
-		assertThat(board.getDice(),instanceOf(Dice.class));
+		assertThat(g.getDice(),instanceOf(Dice.class));
 	}
 	
 	@Test

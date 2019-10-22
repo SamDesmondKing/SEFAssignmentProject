@@ -11,9 +11,15 @@ import java.util.HashMap;
 import main.Model.Board;
 import main.Model.Entity;
 import main.Model.HumanPiece;
+import main.Model.Ladder;
 import main.Model.Player;
+import main.Model.Snake;
+import main.View.Game;
+import java.io.Serializable;
 
-public class HumanController {
+public class HumanController implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	
 	private static final int[] outerUp = IntStream.range(91, 101).toArray();
 	private static final int[] innerUp = IntStream.range(81, 91).toArray();
@@ -33,7 +39,62 @@ public class HumanController {
 	public HumanController() {
 		setMovesToTrue();
 	}
+	
+	public void updateParalysedPieces(Board board) {
+		   int turns;
+		   boolean isParalysed;
+		   for (HumanPiece piece: board.getPieces()) {
+			   isParalysed = piece.getParalyse();
+			   turns = piece.getParalysedTurns();
+			   if (isParalysed) {
+				   if (turns + 1 == 3) {
+					   piece.setParalyse(false);
+					   piece.setParalysedTurns(0);
+				   }
+				   else {
+					   piece.setParalysedTurns(turns + 1);
+				   }
+			   }
+		   }
+	   }
+	   
+	   public boolean checkAllPieceParalysed(Board board) {
+		   for (HumanPiece piece: board.getPieces()) {
+			   if (!piece.getParalyse()) {
+				   return false;
+			   }
+		   }
+		   return true;
+	   }
 
+	   public void secondStageMove(HumanPiece piece,Board board,Game game) {
+		   HashMap<Entity,Integer> boardEntities = board.board;
+		   boolean cycle = true;
+		   while (cycle) {
+			   cycle = false;
+			   loop:
+			   for (Entity entity: boardEntities.keySet()) {
+				   if (entity.getLocation() == piece.getLocation()) {
+					   if (entity.getClass() == Snake.class) {
+						   Snake snake = (Snake)entity;
+						   game.setPiece(piece, snake.getTail());
+						   piece.setParalyse(true);
+						   piece.setParalysedTurns(0);
+						   cycle = true;
+						   break loop;
+					   }
+					   else if (entity.getClass() == Ladder.class) {
+						   Ladder ladder = (Ladder)entity;
+						   game.setPiece(piece, ladder.getTop());
+						   cycle = true;
+						   break loop;
+					   }
+				   }
+			   }
+		   }
+	   }
+	   
+	   
 	public void setMovesToTrue() {
 		for (String string: movesString) {
 			moves.put(string, true);
@@ -42,7 +103,9 @@ public class HumanController {
 	
 	public void finalStageLocationCheck(HumanPiece piece) {
 		int location = piece.getLocation();
+		System.out.println(location);
 		if (Arrays.stream(outerLeft).anyMatch(x -> x == location)) {
+			System.out.println("a");
 			for (String movesString: moves.keySet()) {
 				if (movesString.contains("L")) {
 					moves.put(movesString,false);
@@ -50,6 +113,7 @@ public class HumanController {
 			}
 		}
 		else if (Arrays.stream(innerLeft).anyMatch(x -> x == location)) {
+			System.out.println("b");
 			for (String movesString: moves.keySet()) {
 				if (movesString.contains("L2")) {
 					moves.put(movesString,false);
@@ -57,6 +121,7 @@ public class HumanController {
 			}
 		}
 		else if (Arrays.stream(outerRight).anyMatch(x -> x == location)) {
+			System.out.println("c");
 			for (String movesString: moves.keySet()) {
 				if (movesString.contains("R")) {
 					moves.put(movesString,false);
@@ -64,6 +129,7 @@ public class HumanController {
 			}
 		}
 		else if (Arrays.stream(innerRight).anyMatch(x -> x == location)) {
+			System.out.println("d");
 			for (String movesString: moves.keySet()) {
 				if (movesString.contains("R2")) {
 					moves.put(movesString,false);
@@ -71,6 +137,7 @@ public class HumanController {
 			}
 		}
 		if (Arrays.stream(outerUp).anyMatch(x -> x == location)) {
+			System.out.println("e");
 			for (String movesString: moves.keySet()) {
 				if (movesString.contains("U")) {
 					moves.put(movesString,false);
@@ -78,6 +145,7 @@ public class HumanController {
 			}
 		}
 		else if (Arrays.stream(innerUp).anyMatch(x -> x == location)) {
+			System.out.println("f");
 			for (String movesString: moves.keySet()) {
 				if (movesString.contains("U2")) {
 					moves.put(movesString,false);
@@ -85,12 +153,14 @@ public class HumanController {
 			}
 		}
 		else if (Arrays.stream(outerDown).anyMatch(x -> x == location)) {
+			System.out.println("g");
 			for (String movesString: moves.keySet()) {
 				if (movesString.contains("D")) {
 					moves.put(movesString,false);
 				}
 			}
 		}
+
 		else if (Arrays.stream(innerDown).anyMatch(x -> x == location)) {
 			for (String movesString: moves.keySet()) {
 				if (movesString.contains("D2")) {
